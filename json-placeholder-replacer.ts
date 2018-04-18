@@ -21,7 +21,7 @@ export class JsonPlaceholderReplacer {
             }
         }
         return node;
-    }
+    };
 
     public replaceValue(node: string): string {
         const output = node.replace(/{{\w+}}/g,
