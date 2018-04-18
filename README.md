@@ -1,7 +1,7 @@
 # jsonPlaceholderReplacer
 Lightweight yet really powerful typescript library/cli to replace placeholders in json.
 
-Usage:
+## Library usage:
 As simples as:
 ```
 import {JsonPlaceholderReplacer} from "json-placeholder-replacer";
@@ -119,4 +119,13 @@ const afterReplace = placeHolderReplacer.replace({
 //                        inner: "inner"
 //                      }, 987]
 // }
+```
+
+## CLI usage
+```
+#$json-placeholder-replacer replaceableFilename [...variableMaps]
+```
+Example:
+```
+$json-placeholder-replacer replaceable.json variableMap1.json variableMap2.json
 ```
