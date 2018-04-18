@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "Javascript/Typescript library/cli to replace placeholders in jsons",
   "main": "index.js",
+  "types": "json-placeholder-replacer.d.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc"
