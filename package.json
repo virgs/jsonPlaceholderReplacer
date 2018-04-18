@@ -38,6 +38,9 @@
     "tsd": "^0.6.5",
     "typescript": "^2.7.2"
   },
+  "bin": {
+    "json-placeholder-replacer": "dist/index.js"
+  },
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
