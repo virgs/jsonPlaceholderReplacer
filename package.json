@@ -1,5 +1,5 @@
 {
-  "name": "jsonplaceholderreplacer",
+  "name": "json-placeholder-replacer",
   "version": "1.0.0",
   "description": "Javascript/Typescript library/cli to replace placeholders in jsons",
   "main": "index.js",
