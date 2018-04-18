@@ -1,7 +1,7 @@
-export class PlaceHolderReplacer {
+export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
 
-    public addVariableMap(variableMap: object): PlaceHolderReplacer {
+    public addVariableMap(variableMap: object): JsonPlaceholderReplacer {
         this.variablesMap.unshift(variableMap);
         return this;
     }

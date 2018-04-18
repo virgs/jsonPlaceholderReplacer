@@ -1,9 +1,9 @@
-import {PlaceHolderReplacer} from "./place-holder-replacer";
+import {JsonPlaceholderReplacer} from "./json-placeholder-replacer";
 
-describe('PlaceHolderReplacer', function() {
+describe('JsonPlaceholderReplacer', function() {
 
     it('should replace place holder', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
         placeHolderReplacer.addVariableMap({
@@ -17,7 +17,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('last added map should have higher priority', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = "100";
         placeHolderReplacer.addVariableMap({
@@ -34,7 +34,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('last handle boolean values', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = true;
         placeHolderReplacer.addVariableMap({
@@ -51,7 +51,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('should not replace undefined placeHolder', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "{{key}}"
@@ -61,7 +61,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('should replace full object placeHolder', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
             key: {
@@ -81,7 +81,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('should not replace key placeHolder', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
             key: "someValue"
@@ -95,7 +95,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('should handle array substitution', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
             key: "someValue"
@@ -108,7 +108,7 @@ describe('PlaceHolderReplacer', function() {
     });
 
     it('should handle array object substitution', function() {
-        const placeHolderReplacer = new PlaceHolderReplacer();
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
             key: {

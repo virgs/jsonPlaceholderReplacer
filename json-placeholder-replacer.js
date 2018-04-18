@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class PlaceHolderReplacer {
+class JsonPlaceholderReplacer {
     constructor() {
         this.variablesMap = [];
         this.replaceChildren = (node) => {
@@ -49,4 +49,4 @@ class PlaceHolderReplacer {
         return null;
     }
 }
-exports.PlaceHolderReplacer = PlaceHolderReplacer;
+exports.JsonPlaceholderReplacer = JsonPlaceholderReplacer;
