@@ -1,1 +1,1 @@
-export {JsonPlaceholderReplacer} from 'json-placeholder-replacer'
+export {JsonPlaceholderReplacer} from './json-placeholder-replacer'
