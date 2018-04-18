@@ -1,5 +1,6 @@
 export declare class JsonPlaceholderReplacer {
     private variablesMap;
+    constructor();
     addVariableMap(variableMap: object): JsonPlaceholderReplacer;
     replace(json: {}): {};
     private replaceChildren;

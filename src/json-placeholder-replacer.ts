@@ -1,6 +1,10 @@
 export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
 
+    public constructor() {
+
+    }
+
     public addVariableMap(variableMap: object): JsonPlaceholderReplacer {
         this.variablesMap.unshift(variableMap);
         return this;
