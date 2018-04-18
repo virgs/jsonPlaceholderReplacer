@@ -33,7 +33,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(+expected);
     });
 
-    it('last handle boolean values', function() {
+    it('should handle boolean values', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = true;
@@ -105,6 +105,19 @@ describe('JsonPlaceholderReplacer', function() {
         })
 
         expect(afterReplace.key).toEqual( ["string", "someValue", 0]);
+    });
+
+    it('should replace every occurrence', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            key: "someValue"
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: ["string", "{{key}}", "{{key}}"]
+        })
+
+        expect(afterReplace.key).toEqual( ["string", "someValue", "someValue"]);
     });
 
     it('should handle array object substitution', function() {
