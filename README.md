@@ -8,19 +8,25 @@ import {JsonPlaceholderReplacer} from "json-placeholder-replacer";
 const placeHolderReplacer = new JsonPlaceholderReplacer();
 
 placeHolderReplacer.addVariableMap({
-    key: 100
+    key: 100,
+    otherKey: 200
 });
-const afterReplace: any = placeHolderReplacer.replace({
-    replaceable: "{{key}}"
+const afterReplace = placeHolderReplacer.replace({
+    replaceable: "{{key}}",
+    otherReplaceableWithSameKey: "{{key}}",
+    otherReplaceable: "{{otherKey}}"
 })
 
 // afterReplace = {
-//    replaceable: 100
+//    replaceable: 100,
+//    otherReplaceableWithSameKey: 100,
+//    otherReplaceable: 200
 // }
 ```
+
 All you have to do is to use double curly brackets **{{placeholderKey}}** to identify the place holder
+
 It's possible to add more than one variables map.
-Like this:
 ```
 placeHolderReplacer.addVariableMap({
     firstMapKey: "1"
@@ -28,7 +34,7 @@ placeHolderReplacer.addVariableMap({
 placeHolderReplacer.addVariableMap({
     secondMapKey: 2
 });
-const afterReplace: any = placeHolderReplacer.replace({
+const afterReplace = placeHolderReplacer.replace({
     replaceable: "{{firstMapKey}}",
     otherReplaceable: "{{secondMapKey}}"
 })
@@ -47,7 +53,7 @@ placeHolderReplacer.addVariableMap({
 placeHolderReplacer.addVariableMap({
     id: "higherPriority"
 });
-const afterReplace: any = placeHolderReplacer.replace({
+const afterReplace = placeHolderReplacer.replace({
     replaceable: "{{id}}"
 })
 
@@ -65,7 +71,7 @@ placeHolderReplacer.addVariableMap({
       inner: "inner"
     }
 });
-const afterReplace: any = placeHolderReplacer.replace({
+const afterReplace = placeHolderReplacer.replace({
     booleanReplaceable: "{{booleanKey}}",
     stringReplaceable: "{{stringKey}}",
     numberReplaceable: "{{numberKey}}",
@@ -88,7 +94,7 @@ Just to make it clear, it does not replace the placeholder Key:
 placeHolderReplacer.addVariableMap({
     key: "someValue"
 });
-const afterReplace: any = placeHolderReplacer.replace({
+const afterReplace = placeHolderReplacer.replace({
     "{{key}}": "value"
 })
 // afterReplace = {
@@ -104,7 +110,7 @@ placeHolderReplacer.addVariableMap({
       inner: "inner"
     }
 });
-const afterReplace: any = placeHolderReplacer.replace({
+const afterReplace = placeHolderReplacer.replace({
     array: ["string", "{{objectReplaceable}}", {{key}}]
 })
 
@@ -112,24 +118,5 @@ const afterReplace: any = placeHolderReplacer.replace({
 //    array: ["string", {
 //                        inner: "inner"
 //                      }, 987]
-// }
-```
-
-It replaces all placeHolders occurences:
-```
-import {JsonPlaceholderReplacer} from "json-placeholder-replacer";
-
-const placeHolderReplacer = new JsonPlaceholderReplacer();
-placeHolderReplacer.addVariableMap({
-    key: 100
-});
-const afterReplace: any = placeHolderReplacer.replace({
-    firstOccurrence: "{{key}}",
-    secondOccurrence: "{{key}}"
-})
-
-// afterReplace = {
-//    firstOccurrence: 100,
-//    secondOccurrence: 100
 // }
 ```
