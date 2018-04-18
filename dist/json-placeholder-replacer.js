@@ -4,24 +4,31 @@ class JsonPlaceholderReplacer {
     constructor() {
         this.variablesMap = [];
         this.replaceChildren = (node) => {
+            let clone = Object.assign({}, node);
             for (const key in node) {
                 const attribute = node[key];
                 if (typeof attribute == 'object') {
-                    node[key] = this.replaceChildren(attribute);
+                    clone[key] = this.replaceChildren(attribute);
                 }
                 else {
-                    node[key] = this.replaceValue(attribute.toString());
+                    clone[key] = this.replaceValue(attribute.toString());
                 }
             }
-            return node;
+            return clone;
         };
     }
     addVariableMap(variableMap) {
-        this.variablesMap.unshift(variableMap);
+        if (typeof variableMap == 'string')
+            this.variablesMap.unshift(JSON.parse(variableMap));
+        else
+            this.variablesMap.unshift(variableMap);
         return this;
     }
     replace(json) {
-        return this.replaceChildren(json);
+        if (typeof json == 'string')
+            return this.replaceChildren(JSON.parse(json));
+        else
+            return this.replaceChildren(json);
     }
     replaceValue(node) {
         const output = node.replace(/{{\w+}}/g, (placeHolder) => {

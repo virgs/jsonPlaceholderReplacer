@@ -5,34 +5,41 @@ export class JsonPlaceholderReplacer {
 
     }
 
-    public addVariableMap(variableMap: object): JsonPlaceholderReplacer {
-        this.variablesMap.unshift(variableMap);
+    public addVariableMap(variableMap: object | string): JsonPlaceholderReplacer {
+        if (typeof variableMap == 'string')
+            this.variablesMap.unshift(JSON.parse(variableMap));
+        else
+            this.variablesMap.unshift(variableMap);
         return this;
     }
 
-    public replace(json: {}): {} {
-        return this.replaceChildren(json);
+    public replace(json: object | string): {} {
+        if (typeof json == 'string')
+            return this.replaceChildren(JSON.parse(json));
+        else
+            return this.replaceChildren(json);
     }
 
     private replaceChildren = (node: any): {} => {
+        let clone = Object.assign({}, node);
         for (const key in node) {
             const attribute = node[key];
             if (typeof attribute == 'object') {
-                node[key] = this.replaceChildren(attribute);
+                clone[key] = this.replaceChildren(attribute);
             }
             else {
-                node[key] = this.replaceValue(attribute.toString());
+                clone[key] = this.replaceValue(attribute.toString());
             }
         }
-        return node;
+        return clone;
     };
 
-    public replaceValue(node: string): string {
+    private replaceValue(node: string): any {
         const output = node.replace(/{{\w+}}/g,
             (placeHolder: string): string => {
-                            const key: string = placeHolder.substr(2, placeHolder.length - 4);
-                            return this.checkInEveryMap(key) || placeHolder;
-                    });
+                const key: string = placeHolder.substr(2, placeHolder.length - 4);
+                return this.checkInEveryMap(key) || placeHolder;
+            });
 
         try {
             return JSON.parse(output);
