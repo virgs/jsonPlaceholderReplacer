@@ -24,7 +24,7 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-All you have to do is to use double curly brackets **{{placeholderKey}}** to identify the place holder
+All you have to do is to use double curly brackets **{{placeholderKey}}** to identify the placeholder
 
 It's possible to add more than one variables map.
 ```
