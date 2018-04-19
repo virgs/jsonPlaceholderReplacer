@@ -136,4 +136,60 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.key[1].nested).toEqual("value");
     });
 
+    it('should handle strings varMap substitution', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap(JSON.stringify({
+            key: {
+                nested: "value"
+            }
+        }));
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: ["string", "{{key}}", 0]
+        })
+
+        expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
+        expect(afterReplace.key[1].nested).toEqual("value");
+    });
+
+    it('should handle strings replaceable substitution', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap(JSON.stringify({
+            key: {
+                nested: "value"
+            }
+        }));
+        const afterReplace: any = placeHolderReplacer.replace(JSON.stringify({
+            key: ["string", "{{key}}", 0]
+        }));
+
+        expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
+        expect(afterReplace.key[1].nested).toEqual("value");
+    });
+
+    it('should handle huge json', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({key: "virgs"});
+        const afterReplace: any = placeHolderReplacer.replace(JSON.stringify({
+            requisition: {
+                name: "someName",
+                subscription: [
+                    {
+                        key: "{{key}}"
+                    },
+                    {
+                        key: "{{key}}"
+                    },
+                    {
+                        key: "{{key}}"
+                    }
+                ]
+            }
+        }));
+
+        afterReplace.requisition.subscription.map(sub => expect(sub.key).toEqual("virgs"));
+    });
+
 });
