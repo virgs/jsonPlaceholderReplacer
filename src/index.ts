@@ -2,8 +2,8 @@
 export {JsonPlaceholderReplacer} from './json-placeholder-replacer'
 import {JsonPlaceholderReplacer} from "./json-placeholder-replacer";
 
-if (process.argv.length > 2) {
-    process.exitCode = process.argv.length
+if (process.argv.length > 2 && process.argv[1].includes("json-placeholder-replacer")) {
+    process.exitCode = process.argv.length;
     const fs = require("fs");
     const replacer = new JsonPlaceholderReplacer();
 

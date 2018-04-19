@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var json_placeholder_replacer_1 = require("./json-placeholder-replacer");
 exports.JsonPlaceholderReplacer = json_placeholder_replacer_1.JsonPlaceholderReplacer;
 const json_placeholder_replacer_2 = require("./json-placeholder-replacer");
-if (process.argv.length > 2) {
+if (process.argv.length > 2 && process.argv[1].includes("json-placeholder-replacer")) {
     process.exitCode = process.argv.length;
     const fs = require("fs");
     const replacer = new json_placeholder_replacer_2.JsonPlaceholderReplacer();
