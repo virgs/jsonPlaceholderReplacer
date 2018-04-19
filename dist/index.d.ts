@@ -1,1 +1,2 @@
-export { JsonPlaceholderReplacer } from './json-placeholder-replacer';
+export { Container } from "./container";
+export { Injectable } from "./injector";
