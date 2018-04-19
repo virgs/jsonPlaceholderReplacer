@@ -1,7 +1,7 @@
 {
-  "name": "conditional-injector",
-  "version": "1.0.0",
-  "description": "Typescript dependency injectional based on conditional expressions",
+  "name": "json-placeholder-replacer",
+  "version": "1.0.11",
+  "description": "Javascript/Typescript library/cli to replace placeholders in json",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,25 +10,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lopidio/conditional-injector.git"
+    "url": "git+https://github.com/lopidio/jsonPlaceholderReplacer.git"
   },
   "keywords": [
+    "json",
+    "replacer",
+    "substitution",
+    "placeholder",
+    "cli",
+    "library",
     "typescript",
-    "dependency-injection",
-    "predicate",
-    "injection",
-    "smart",
-    "conditional",
-    "injector",
     "javascript",
     "javascript-library"
   ],
   "author": "Virgs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lopidio/conditional-injector/issues"
+    "url": "https://github.com/lopidio/jsonPlaceholderReplacer/issues"
   },
-  "homepage": "https://github.com/lopidio/conditional-injector#readme",
+  "homepage": "https://github.com/lopidio/jsonPlaceholderReplacer#readme",
   "devDependencies": {
     "@types/jest": "^22.2.0",
     "@types/node": "^9.4.6",
