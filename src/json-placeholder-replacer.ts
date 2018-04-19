@@ -21,17 +21,16 @@ export class JsonPlaceholderReplacer {
     }
 
     private replaceChildren = (node: any): {} => {
-        let clone = Object.assign({}, node);
         for (const key in node) {
             const attribute = node[key];
             if (typeof attribute == 'object') {
-                clone[key] = this.replaceChildren(attribute);
+                node[key] = this.replaceChildren(attribute);
             }
             else {
-                clone[key] = this.replaceValue(attribute.toString());
+                node[key] = this.replaceValue(attribute.toString());
             }
         }
-        return clone;
+        return node;
     };
 
     private replaceValue(node: string): any {
