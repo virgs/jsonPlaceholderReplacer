@@ -53,8 +53,5 @@
       "jsx",
       "json"
     ]
-  },
-  "dependencies": {
-    "npm": "^5.8.0"
   }
 }
