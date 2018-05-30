@@ -1,4 +1,5 @@
 # jsonPlaceholderReplacer
+[![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer)\
 Lightweight yet really powerful typescript library/cli to replace placeholders in json.
 
 ## Library usage:
