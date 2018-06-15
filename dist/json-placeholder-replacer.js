@@ -17,17 +17,21 @@ class JsonPlaceholderReplacer {
         };
     }
     addVariableMap(variableMap) {
-        if (typeof variableMap == 'string')
+        if (typeof variableMap == 'string') {
             this.variablesMap.unshift(JSON.parse(variableMap));
-        else
+        }
+        else {
             this.variablesMap.unshift(variableMap);
+        }
         return this;
     }
     replace(json) {
-        if (typeof json == 'string')
+        if (typeof json == 'string') {
             return this.replaceChildren(JSON.parse(json));
-        else
+        }
+        else {
             return this.replaceChildren(json);
+        }
     }
     replaceValue(node) {
         const output = node.replace(/{{\w+}}/g, (placeHolder) => {

@@ -1,23 +1,21 @@
 export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
 
-    public constructor() {
-
-    }
-
     public addVariableMap(variableMap: object | string): JsonPlaceholderReplacer {
-        if (typeof variableMap == 'string')
+        if (typeof variableMap == 'string') {
             this.variablesMap.unshift(JSON.parse(variableMap));
-        else
+        } else {
             this.variablesMap.unshift(variableMap);
+        }
         return this;
     }
 
     public replace(json: object | string): {} {
-        if (typeof json == 'string')
+        if (typeof json == 'string') {
             return this.replaceChildren(JSON.parse(json));
-        else
+        } else {
             return this.replaceChildren(json);
+        }
     }
 
     private replaceChildren = (node: any): {} => {
@@ -25,13 +23,12 @@ export class JsonPlaceholderReplacer {
             const attribute = node[key];
             if (typeof attribute == 'object') {
                 node[key] = this.replaceChildren(attribute);
-            }
-            else {
+            } else {
                 node[key] = this.replaceValue(attribute.toString());
             }
         }
         return node;
-    };
+    }
 
     private replaceValue(node: string): any {
         const output = node.replace(/{{\w+}}/g,
