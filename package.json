@@ -31,14 +31,13 @@
   },
   "homepage": "https://github.com/lopidio/jsonPlaceholderReplacer#readme",
   "devDependencies": {
-    "@types/jest": "^22.2.0",
+    "@types/jest": "^22.2.3",
     "@types/node": "^9.4.6",
     "jest": "^22.4.2",
     "ts-jest": "^22.4.1",
     "ts-node": "^4.1.0",
-    "tsd": "^0.6.5",
-    "typescript": "^2.7.2",
-    "tslint": "^5.10.0"
+    "tslint": "^5.10.0",
+    "typescript": "^2.7.2"
   },
   "bin": {
     "json-placeholder-replacer": "dist/index.js"
