@@ -5,5 +5,6 @@ rep
 map
 README.md
 .gitignore
+.travis.yml
 .idea
 src
