@@ -1,6 +1,6 @@
 {
   "name": "json-placeholder-replacer",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Javascript/Typescript library/cli to replace placeholders in an javascript object",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
