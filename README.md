@@ -2,7 +2,17 @@
 [![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer) 
 [![build status](https://travis-ci.org/lopidio/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/lopidio/jsonPlaceholderReplacer)
 
-Lightweight yet really powerful typescript library/cli to replace placeholders in json.
+Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object.
+All you have to do is to use double curly brackets **{{placeholderKey}}** or angle brackets **<<placeholderKey>>**, interchangeably, to identify the placeholder
+
+## CLI usage
+```
+$ json-placeholder-replacer replaceableFilename [...variableMaps]
+```
+Example:
+        
+$ json-placeholder-replacer ![replaceable.json](/rep) ![variable.map](/map)
+
 
 ## Library usage:
 As simples as:
@@ -16,7 +26,7 @@ placeHolderReplacer.addVariableMap({
 });
 const afterReplace = placeHolderReplacer.replace({
     replaceable: "{{key}}",
-    otherReplaceableWithSameKey: "{{key}}",
+    otherReplaceableWithSameKey: "<<key>>",
     otherReplaceable: "{{otherKey}}"
 })
 
@@ -26,8 +36,6 @@ const afterReplace = placeHolderReplacer.replace({
 //    otherReplaceable: 200
 // }
 ```
-
-All you have to do is to use double curly brackets **{{placeholderKey}}** to identify the placeholder
 
 It's possible to add more than one variables map.
 ```
@@ -39,7 +47,7 @@ placeHolderReplacer.addVariableMap({
 });
 const afterReplace = placeHolderReplacer.replace({
     replaceable: "{{firstMapKey}}",
-    otherReplaceable: "{{secondMapKey}}"
+    otherReplaceable: "<<secondMapKey>>"
 })
 
 // afterReplace = {
@@ -122,13 +130,4 @@ const afterReplace = placeHolderReplacer.replace({
 //                        inner: "inner"
 //                      }, 987]
 // }
-```
-
-## CLI usage
-```
-#$json-placeholder-replacer replaceableFilename [...variableMaps]
-```
-Example:
-```
-$json-placeholder-replacer replaceable.json variableMap1.json variableMap2.json
 ```

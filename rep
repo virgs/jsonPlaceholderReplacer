@@ -1,3 +1,4 @@
 {
-	"key": "{{key}}"
+	"curly": "{{key}}",
+	"angle": "<<key>>"
 }

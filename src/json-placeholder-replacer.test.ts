@@ -2,7 +2,7 @@ import {JsonPlaceholderReplacer} from "./json-placeholder-replacer";
 
 describe('JsonPlaceholderReplacer', function() {
 
-    it('should replace place holder', function() {
+    it('should replace place holder {{}}', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -11,6 +11,20 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "{{key}}"
+        })
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should replace place holder <<>>', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key>>"
         })
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -44,7 +58,7 @@ describe('JsonPlaceholderReplacer', function() {
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "{{key}}"
+            replaceable: "<<key>>"
         })
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -74,7 +88,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
 
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "{{key}}"
+            replaceable: "<<key>>"
         })
 
         expect(afterReplace.replaceable.nested.moreNested.key).toBe("value");
@@ -101,7 +115,7 @@ describe('JsonPlaceholderReplacer', function() {
             key: "someValue"
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "{{key}}", 0]
+            key: ["string", "<<key>>", 0]
         })
 
         expect(afterReplace.key).toEqual( ["string", "someValue", 0]);
@@ -114,7 +128,7 @@ describe('JsonPlaceholderReplacer', function() {
             key: "someValue"
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "{{key}}", "{{key}}"]
+            key: ["string", "{{key}}", "<<key>>"]
         })
 
         expect(afterReplace.key).toEqual( ["string", "someValue", "someValue"]);
@@ -177,7 +191,7 @@ describe('JsonPlaceholderReplacer', function() {
                 name: "someName",
                 subscription: [
                     {
-                        key: "{{key}}"
+                        key: "<<key>>"
                     },
                     {
                         key: "{{key}}"
