@@ -3,7 +3,7 @@
 [![build status](https://travis-ci.org/lopidio/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/lopidio/jsonPlaceholderReplacer)
 
 Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object.
-All you have to do is to use double curly brackets **{{placeholderKey}}** or angle brackets **<<placeholderKey>>**, interchangeably, to identify the placeholder
+All you have to do is to use double curly brackets **{{**placeholderKey**}}** or angle brackets **<<**placeholderKey**>>**, interchangeably, to identify the placeholder
 
 ## CLI usage
 ```
