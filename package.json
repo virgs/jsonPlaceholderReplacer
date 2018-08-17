@@ -45,7 +45,7 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.ts"
+      "src/json-placeholder-replacer.ts"
     ],
     "coverageThreshold": {
       "global": {
