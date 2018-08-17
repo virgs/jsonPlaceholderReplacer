@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest && node dist/index.js rep map",
+    "codeCoverage": "jest --silent --coverage",
     "lint": "node_modules/.bin/tslint --project tsconfig.json --force",
     "build": "tsc"
   },
@@ -43,6 +44,17 @@
     "json-placeholder-replacer": "dist/index.js"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 95,
+        "branches": 80,
+        "functions": 95,
+        "lines": 95
+      }
+    },
     "transform": {
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
