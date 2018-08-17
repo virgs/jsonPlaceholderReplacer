@@ -6,7 +6,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-};
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 var json_placeholder_replacer_1 = require("./json-placeholder-replacer");
 exports.JsonPlaceholderReplacer = json_placeholder_replacer_1.JsonPlaceholderReplacer;
