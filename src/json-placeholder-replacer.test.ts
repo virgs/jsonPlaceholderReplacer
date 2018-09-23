@@ -30,6 +30,20 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
+    it('should replace big names', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            "key-with-several/separators.yeap~a_lot": expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key-with-several/separators.yeap~a_lot>>"
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
     it('last added map should have higher priority', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 

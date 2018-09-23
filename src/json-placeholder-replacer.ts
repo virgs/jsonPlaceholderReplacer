@@ -31,11 +31,11 @@ export class JsonPlaceholderReplacer {
     }
 
     private replaceValue(node: string): any {
-        let output = node.replace(/{{\w+}}/g,
+        let output = node.replace(/{{[^}}]+}}/g,
             (placeHolder: string): string => {
                 const key: string = placeHolder.substr(2, placeHolder.length - 4);
                 return this.checkInEveryMap(key) || placeHolder;
-            }).replace(/<<\w+>>/g,
+            }).replace(/<<[^>>]+>>/g,
             (placeHolder: string): string => {
                 const key: string = placeHolder.substr(2, placeHolder.length - 4);
                 return this.checkInEveryMap(key) || placeHolder;
