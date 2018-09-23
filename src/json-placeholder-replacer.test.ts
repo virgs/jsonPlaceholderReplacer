@@ -217,7 +217,7 @@ describe('JsonPlaceholderReplacer', function() {
             }
         }));
 
-        afterReplace.requisition.subscription.map(sub => expect(sub.key).toEqual("virgs"));
+        afterReplace.requisition.subscription.map((sub: any) => expect(sub.key).toEqual("virgs"));
     });
 
 });
