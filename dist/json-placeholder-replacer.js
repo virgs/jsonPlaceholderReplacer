@@ -34,13 +34,13 @@ class JsonPlaceholderReplacer {
         }
     }
     replaceValue(node) {
-        let output = node.replace(/{{[^}}]+}}/g, (placeHolder) => {
+        let replacer = (placeHolder) => {
             const key = placeHolder.substr(2, placeHolder.length - 4);
-            return this.checkInEveryMap(key) || placeHolder;
-        }).replace(/<<[^>>]+>>/g, (placeHolder) => {
-            const key = placeHolder.substr(2, placeHolder.length - 4);
-            return this.checkInEveryMap(key) || placeHolder;
-        });
+            let inEveryMap = this.checkInEveryMap(key);
+            return inEveryMap !== undefined ? inEveryMap : placeHolder;
+        };
+        let output = node.replace(/{{[^}}]+}}/g, replacer)
+            .replace(/<<[^>>]+>>/g, replacer);
         try {
             return JSON.parse(output);
         }
@@ -52,14 +52,13 @@ class JsonPlaceholderReplacer {
         let map = {};
         for (map of this.variablesMap) {
             const variableValue = map[key];
-            if (variableValue) {
+            if (variableValue !== undefined) {
                 if (typeof variableValue == 'object') {
                     return JSON.stringify(variableValue);
                 }
                 return variableValue;
             }
         }
-        return null;
     }
 }
 exports.JsonPlaceholderReplacer = JsonPlaceholderReplacer;

@@ -108,6 +108,19 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable.nested.moreNested.key).toBe("value");
     });
 
+    it('should replace when value is 0', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            value: 0
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: "<<value>>"
+        });
+
+        expect(afterReplace.key).toBe(0);
+    });
+
     it('should not replace key placeHolder', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 

@@ -31,16 +31,13 @@ export class JsonPlaceholderReplacer {
     }
 
     private replaceValue(node: string): any {
-        let output = node.replace(/{{[^}}]+}}/g,
-            (placeHolder: string): string => {
-                const key: string = placeHolder.substr(2, placeHolder.length - 4);
-                return this.checkInEveryMap(key) || placeHolder;
-            }).replace(/<<[^>>]+>>/g,
-            (placeHolder: string): string => {
-                const key: string = placeHolder.substr(2, placeHolder.length - 4);
-                return this.checkInEveryMap(key) || placeHolder;
-            });
-
+        let replacer = (placeHolder: string): string => {
+            const key: string = placeHolder.substr(2, placeHolder.length - 4);
+            let inEveryMap = this.checkInEveryMap(key);
+            return inEveryMap !== undefined ? inEveryMap : placeHolder;
+        };
+        let output = node.replace(/{{[^}}]+}}/g, replacer)
+                        .replace(/<<[^>>]+>>/g, replacer);
         try {
             return JSON.parse(output);
         }
@@ -49,18 +46,17 @@ export class JsonPlaceholderReplacer {
         }
     }
 
-    private checkInEveryMap(key: string): string | null {
+    private checkInEveryMap(key: string): string | undefined {
         let map: any = {};
         for (map of this.variablesMap) {
             const variableValue: any = map[key];
 
-            if (variableValue) {
+            if (variableValue !== undefined) {
                 if (typeof variableValue == 'object') {
                     return JSON.stringify(variableValue);
                 }
                 return variableValue;
             }
         }
-        return null;
     }
 }
