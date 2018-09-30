@@ -121,6 +121,45 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.key).toBe(0);
     });
 
+    it('should replace when value is empty', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            value: ''
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: "<<value>>"
+        });
+
+        expect(afterReplace.key).toBe('');
+    });
+
+    it('should replace when value is null', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            value: null
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: "<<value>>"
+        });
+
+        expect(afterReplace.key).toBeNull();
+    });
+
+    it('should not replace when value is undefined', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            value: undefined
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            key: "<<value>>"
+        });
+
+        expect(afterReplace.key).toBe("<<value>>");
+    });
+
     it('should not replace key placeHolder', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
