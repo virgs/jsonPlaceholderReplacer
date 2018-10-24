@@ -132,3 +132,20 @@ const afterReplace = placeHolderReplacer.replace({
 //                      }, 987]
 // }
 ```
+
+Want to get nested elements? Go ahead!
+```
+placeHolderReplacer.addVariableMap({
+    key: {
+        nested: "value"
+    }
+});
+const afterReplace: any = placeHolderReplacer.replace({
+    replaceable: "<<key.nested>>"
+});
+
+// afterReplace = {
+//    replaceable: "value"
+// }
+
+```
