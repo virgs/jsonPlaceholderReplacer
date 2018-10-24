@@ -3,9 +3,9 @@ export class JsonPlaceholderReplacer {
 
     public addVariableMap(variableMap: object | string): JsonPlaceholderReplacer {
         if (typeof variableMap == 'string') {
-            this.variablesMap.unshift(JSON.parse(variableMap));
+            this.variablesMap.push(JSON.parse(variableMap));
         } else {
-            this.variablesMap.unshift(variableMap);
+            this.variablesMap.push(variableMap);
         }
         return this;
     }
@@ -32,8 +32,8 @@ export class JsonPlaceholderReplacer {
 
     private replaceValue(node: string): any {
         let replacer = (placeHolder: string): string => {
-            const key: string = placeHolder.substr(2, placeHolder.length - 4);
-            let inEveryMap = this.checkInEveryMap(key);
+            const path: string = placeHolder.substr(2, placeHolder.length - 4);
+            let inEveryMap = this.checkInEveryMap(path);
             return inEveryMap !== undefined ? inEveryMap : placeHolder;
         };
         let output = node.replace(/{{[^}}]+}}/g, replacer)
@@ -46,17 +46,26 @@ export class JsonPlaceholderReplacer {
         }
     }
 
-    private checkInEveryMap(key: string): string | undefined {
-        let map: any = {};
-        for (map of this.variablesMap) {
-            const variableValue: any = map[key];
+    private checkInEveryMap(path: string): string | undefined {
+        let result = undefined;
+        this.variablesMap.forEach(map => {
+            let variableValue: any = map;
+            path.split('.')
+                .forEach(key => {
+                    if (variableValue === undefined) {
+                        return;
+                    }
+                    variableValue = variableValue[key];
+                });
 
             if (variableValue !== undefined) {
                 if (typeof variableValue == 'object') {
-                    return JSON.stringify(variableValue);
+                    result = JSON.stringify(variableValue);
+                } else {
+                    result = variableValue;
                 }
-                return variableValue;
             }
-        }
+        });
+        return result;
     }
 }

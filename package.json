@@ -42,7 +42,8 @@
     "typescript": "^3.0.3"
   },
   "bin": {
-    "json-placeholder-replacer": "dist/index.js"
+    "json-placeholder-replacer": "dist/index.js",
+    "jpr": "dist/index.js"
   },
   "jest": {
     "collectCoverageFrom": [

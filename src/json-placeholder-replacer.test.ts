@@ -11,7 +11,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "{{key}}"
-        })
+        });
 
         expect(afterReplace.replaceable).toBe(expected);
     });
@@ -25,7 +25,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "<<key>>"
-        })
+        });
 
         expect(afterReplace.replaceable).toBe(expected);
     });
@@ -35,10 +35,10 @@ describe('JsonPlaceholderReplacer', function() {
 
         const expected = 100;
         placeHolderReplacer.addVariableMap({
-            "key-with-several/separators.yeap~a_lot": expected
+            "key-with-several/separatorsyeap~a_lot": expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key-with-several/separators.yeap~a_lot>>"
+            replaceable: "<<key-with-several/separatorsyeap~a_lot>>"
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -56,9 +56,41 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "{{key}}"
-        })
+        });
 
         expect(afterReplace.replaceable).toBe(+expected);
+    });
+
+    it('should navigate through variableMap', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 'value';
+        placeHolderReplacer.addVariableMap({
+            key: {
+                nested: expected
+            }
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key.nested>>"
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should do nothing when nothing iw found', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 'value';
+        placeHolderReplacer.addVariableMap({
+            key: {
+                nested: expected
+            }
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key.not.found>>"
+        });
+
+        expect(afterReplace.replaceable).toBe("<<key.not.found>>");
     });
 
     it('should handle boolean values', function() {
@@ -66,14 +98,11 @@ describe('JsonPlaceholderReplacer', function() {
 
         const expected = true;
         placeHolderReplacer.addVariableMap({
-            key: "useless"
-        });
-        placeHolderReplacer.addVariableMap({
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "<<key>>"
-        })
+        });
 
         expect(afterReplace.replaceable).toBe(expected);
     });
@@ -83,7 +112,7 @@ describe('JsonPlaceholderReplacer', function() {
 
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "{{key}}"
-        })
+        });
 
         expect(afterReplace.replaceable).toBe("{{key}}");
     });
@@ -103,7 +132,7 @@ describe('JsonPlaceholderReplacer', function() {
 
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "<<key>>"
-        })
+        });
 
         expect(afterReplace.replaceable.nested.moreNested.key).toBe("value");
     });
@@ -168,7 +197,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             "{{key}}": "value"
-        })
+        });
 
         expect(afterReplace.someValue).not.toBeDefined();
         expect(afterReplace["{{key}}"]).toBe("value");
@@ -182,7 +211,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             key: ["string", "<<key>>", 0]
-        })
+        });
 
         expect(afterReplace.key).toEqual( ["string", "someValue", 0]);
     });
@@ -195,7 +224,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             key: ["string", "{{key}}", "<<key>>"]
-        })
+        });
 
         expect(afterReplace.key).toEqual( ["string", "someValue", "someValue"]);
     });
@@ -210,7 +239,7 @@ describe('JsonPlaceholderReplacer', function() {
         });
         const afterReplace: any = placeHolderReplacer.replace({
             key: ["string", "{{key}}", 0]
-        })
+        });
 
         expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
         expect(afterReplace.key[1].nested).toEqual("value");
@@ -226,7 +255,7 @@ describe('JsonPlaceholderReplacer', function() {
         }));
         const afterReplace: any = placeHolderReplacer.replace({
             key: ["string", "{{key}}", 0]
-        })
+        });
 
         expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
         expect(afterReplace.key[1].nested).toEqual("value");
