@@ -77,6 +77,20 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
+    it('should not navigate through variableMap when a key is found', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 'value';
+        placeHolderReplacer.addVariableMap({
+            "key.with.dot":  expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key.with.dot>>"
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
     it('should do nothing when nothing iw found', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 

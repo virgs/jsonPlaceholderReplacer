@@ -48,24 +48,44 @@ export class JsonPlaceholderReplacer {
 
     private checkInEveryMap(path: string): string | undefined {
         let result = undefined;
-        this.variablesMap.forEach(map => {
-            let variableValue: any = map;
-            path.split('.')
-                .forEach(key => {
-                    if (variableValue === undefined) {
-                        return;
-                    }
-                    variableValue = variableValue[key];
-                });
-
-            if (variableValue !== undefined) {
-                if (typeof variableValue == 'object') {
-                    result = JSON.stringify(variableValue);
-                } else {
-                    result = variableValue;
-                }
-            }
-        });
+        this.variablesMap.forEach(map => result = this.checkEveryMap(map, path));
         return result;
+    }
+
+    private checkEveryMap(map: any, path: string): string | undefined {
+        let shortCircuit = this.checkShortCircuit(map, path);
+        if (shortCircuit) {
+            return shortCircuit;
+        }
+        return this.navigateThroughMap(map, path);
+    }
+
+    private checkShortCircuit(map: any, path: string) {
+        let shortCircuit = map[path];
+        if (shortCircuit !== undefined) {
+            return this.stringify(shortCircuit);
+        }
+    }
+
+    private stringify(variableValue: any): string | undefined {
+        if (variableValue !== undefined) {
+            if (typeof variableValue == 'object') {
+                return JSON.stringify(variableValue);
+            } else {
+                return variableValue;
+            }
+        }
+    }
+
+    private navigateThroughMap(map: any, path: string) {
+        let variableValue: any = map;
+        let keys: string[] = path.split('.');
+        for (let index = 0; index < keys.length; ++index) {
+            if (variableValue === undefined) {
+                return;
+            }
+            variableValue = variableValue[keys[index]];
+        }
+        return this.stringify(variableValue);
     }
 }
