@@ -133,7 +133,7 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-Want to get nested elements? Go ahead!
+Want to get nested elements? Go for it!
 ```
 placeHolderReplacer.addVariableMap({
     key: {

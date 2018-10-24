@@ -37,7 +37,7 @@ export class JsonPlaceholderReplacer {
             return inEveryMap !== undefined ? inEveryMap : placeHolder;
         };
         let output = node.replace(/{{[^}}]+}}/g, replacer)
-                        .replace(/<<[^>>]+>>/g, replacer);
+            .replace(/<<[^>>]+>>/g, replacer);
         try {
             return JSON.parse(output);
         }
@@ -48,44 +48,29 @@ export class JsonPlaceholderReplacer {
 
     private checkInEveryMap(path: string): string | undefined {
         let result = undefined;
-        this.variablesMap.forEach(map => result = this.checkEveryMap(map, path));
+        this.variablesMap.forEach(map => result = this.navigateThroughMap(map, path));
         return result;
     }
 
-    private checkEveryMap(map: any, path: string): string | undefined {
-        let shortCircuit = this.checkShortCircuit(map, path);
-        if (shortCircuit) {
-            return shortCircuit;
+    private navigateThroughMap(map: any, path: string): string | undefined {
+        if (map === undefined) {
+            return;
         }
-        return this.navigateThroughMap(map, path);
-    }
-
-    private checkShortCircuit(map: any, path: string) {
         let shortCircuit = map[path];
         if (shortCircuit !== undefined) {
-            return this.stringify(shortCircuit);
+            return JsonPlaceholderReplacer.stringify(shortCircuit);
         }
+        let keys = path.split('.');
+        const key: string = keys[0];
+        keys.shift();
+        return this.navigateThroughMap(map[key], keys.join('.'));
     }
 
-    private stringify(variableValue: any): string | undefined {
-        if (variableValue !== undefined) {
-            if (typeof variableValue == 'object') {
-                return JSON.stringify(variableValue);
-            } else {
-                return variableValue;
-            }
+    private static stringify(variableValue: any): string | undefined {
+        if (typeof variableValue == 'object') {
+            return JSON.stringify(variableValue);
+        } else {
+            return variableValue;
         }
-    }
-
-    private navigateThroughMap(map: any, path: string) {
-        let variableValue: any = map;
-        let keys: string[] = path.split('.');
-        for (let index = 0; index < keys.length; ++index) {
-            if (variableValue === undefined) {
-                return;
-            }
-            variableValue = variableValue[keys[index]];
-        }
-        return this.stringify(variableValue);
     }
 }

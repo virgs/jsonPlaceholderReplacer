@@ -91,7 +91,23 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should do nothing when nothing iw found', function() {
+    it('should not navigate through variableMap when a key is found in deeper object', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 'value';
+        placeHolderReplacer.addVariableMap({
+            key: {
+                "with.dot": expected
+            }
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key.with.dot>>"
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should do nothing when nothing is found', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
@@ -105,6 +121,23 @@ describe('JsonPlaceholderReplacer', function() {
         });
 
         expect(afterReplace.replaceable).toBe("<<key.not.found>>");
+    });
+
+    it('should prefer short circuit', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 'value';
+        placeHolderReplacer.addVariableMap({
+            key: {
+                nested: "useless"
+            },
+            "key.nested": expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: "<<key.nested>>"
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
     });
 
     it('should handle boolean values', function() {
