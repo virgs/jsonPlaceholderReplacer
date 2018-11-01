@@ -123,6 +123,20 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe("<<key.not.found>>");
     });
 
+    it('should not break when is a cyclic object', function() {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({});
+        let replaceable: any = {
+            key: 1
+        };
+        replaceable.replaceable = replaceable;
+
+        const afterReplace: any = placeHolderReplacer.replace(replaceable);
+
+        expect(afterReplace.replaceable).toBeUndefined();
+    });
+
     it('should prefer short circuit', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
@@ -308,27 +322,11 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.key[1].nested).toEqual("value");
     });
 
-    it('should handle strings replaceable substitution', function() {
-        const placeHolderReplacer = new JsonPlaceholderReplacer();
-
-        placeHolderReplacer.addVariableMap(JSON.stringify({
-            key: {
-                nested: "value"
-            }
-        }));
-        const afterReplace: any = placeHolderReplacer.replace(JSON.stringify({
-            key: ["string", "{{key}}", 0]
-        }));
-
-        expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
-        expect(afterReplace.key[1].nested).toEqual("value");
-    });
-
     it('should handle huge json', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({key: "virgs"});
-        const afterReplace: any = placeHolderReplacer.replace(JSON.stringify({
+        const afterReplace: any = placeHolderReplacer.replace({
             requisition: {
                 name: "someName",
                 subscription: [
@@ -343,7 +341,7 @@ describe('JsonPlaceholderReplacer', function() {
                     }
                 ]
             }
-        }));
+        });
 
         afterReplace.requisition.subscription.map((sub: any) => expect(sub.key).toEqual("virgs"));
     });

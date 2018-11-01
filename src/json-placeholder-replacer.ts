@@ -1,3 +1,5 @@
+import {ObjectDecycler} from './object-decycler';
+
 export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
 
@@ -10,12 +12,8 @@ export class JsonPlaceholderReplacer {
         return this;
     }
 
-    public replace(json: object | string): {} {
-        if (typeof json == 'string') {
-            return this.replaceChildren(JSON.parse(json));
-        } else {
-            return this.replaceChildren(json);
-        }
+    public replace(json: object): {} {
+        return this.replaceChildren(new ObjectDecycler().decycle(json));
     }
 
     private replaceChildren = (node: any): {} => {
