@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest && node dist/index.js rep map",
+    "test": "node_modules/.bin/jest && node dist/index.js rep map",
     "codeCoverage": "jest --silent --coverage",
     "lint": "node_modules/.bin/tslint --project tsconfig.json --force",
     "build": "tsc"
