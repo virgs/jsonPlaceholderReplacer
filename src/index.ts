@@ -12,7 +12,7 @@ if (process.argv.length > 2 && process.argv[1].includes('json-placeholder-replac
         .map((value: string) => replacer.addVariableMap(JSON.parse(fs.readFileSync(value).toString())));
 
     const replaceableFileContent = fs.readFileSync(process.argv[2]).toString();
-    const replacedValue = replacer.replace(replaceableFileContent);
+    const replacedValue = replacer.replace(JSON.parse(replaceableFileContent));
     console.log(JSON.stringify(replacedValue, null, 4));
     process.exitCode = 0;
 }
