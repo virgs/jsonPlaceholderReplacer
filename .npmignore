@@ -8,3 +8,4 @@ README.md
 .travis.yml
 .idea
 src
+coverage/*
