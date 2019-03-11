@@ -1,16 +1,16 @@
 language: node_js
 
 node_js:
-  - "node"
+    - node
 
 cache:
-  directories:
-    - node_modules
-    
+    directories:
+        - node_modules
+
 before_install:
-  - npm install
+    - npm install
 script:
-  - npm run build
-  - npm test
-  - npm run lint
-  - npm run codeCoverage
+    - npm run build
+    - npm test
+    - npm run lint
+    - npm run codeCoverage
