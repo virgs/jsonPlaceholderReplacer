@@ -8,7 +8,8 @@
     "test": "node_modules/.bin/jest && node dist/index.js rep map",
     "codeCoverage": "jest --silent --coverage",
     "lint": "node_modules/.bin/tslint --project tsconfig.json --force",
-    "build": "tsc"
+    "build": "tsc",
+    "all": "npm run lint && npm run build && npm run codeCoverage && npm run test"
   },
   "repository": {
     "type": "git",
@@ -52,7 +53,7 @@
     "coverageThreshold": {
       "global": {
         "statements": 95,
-        "branches": 80,
+        "branches": 95,
         "functions": 95,
         "lines": 95
       }

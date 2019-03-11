@@ -3,7 +3,7 @@ export {JsonPlaceholderReplacer} from './json-placeholder-replacer';
 import {JsonPlaceholderReplacer} from './json-placeholder-replacer';
 import * as fs from 'fs';
 
-if (process.argv.length > 2 && process.argv[1].includes('json-placeholder-replacer')) {
+if (require.main === module) {
     process.exitCode = process.argv.length;
     const replacer = new JsonPlaceholderReplacer();
 
