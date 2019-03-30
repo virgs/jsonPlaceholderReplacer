@@ -12,7 +12,7 @@ $ json-placeholder-replacer replaceableFilename [...variableMaps]
 ```
 Example:
         
-$ json-placeholder-replacer [replaceable.json](/rep) [variable.map](/map)
+```$ json-placeholder-replacer ```[replaceable.json](/rep) [variable.map](/map)
 
 
 ## Library usage:
