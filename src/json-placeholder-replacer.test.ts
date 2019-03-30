@@ -123,20 +123,6 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe("<<key.not.found>>");
     });
 
-    it('should not break when is a cyclic object', function() {
-        const placeHolderReplacer = new JsonPlaceholderReplacer();
-
-        placeHolderReplacer.addVariableMap({});
-        let replaceable: any = {
-            key: 1
-        };
-        replaceable.replaceable = replaceable;
-
-        const afterReplace: any = placeHolderReplacer.replace(replaceable);
-
-        expect(afterReplace.replaceable).toBeUndefined();
-    });
-
     it('should prefer short circuit', function() {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 

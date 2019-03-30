@@ -1,5 +1,3 @@
-import {ObjectDecycler} from './object-decycler';
-
 export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
 
@@ -13,7 +11,7 @@ export class JsonPlaceholderReplacer {
     }
 
     public replace(json: object): {} {
-        return this.replaceChildren(new ObjectDecycler().decycle(json));
+        return this.replaceChildren(json);
     }
 
     private replaceChildren = (node: any): {} => {
