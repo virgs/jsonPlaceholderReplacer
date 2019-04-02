@@ -19,7 +19,7 @@ export class JsonPlaceholderReplacer {
             const attribute = node[key];
             if (typeof attribute == 'object') {
                 node[key] = this.replaceChildren(attribute);
-            } else {
+            } else if (attribute !== undefined) {
                 node[key] = this.replaceValue(attribute.toString());
             }
         }
@@ -36,8 +36,7 @@ export class JsonPlaceholderReplacer {
             .replace(/<<[^>>]+>>/g, replacer);
         try {
             return JSON.parse(output);
-        }
-        catch (exc) {
+        } catch (exc) {
             return output;
         }
     }

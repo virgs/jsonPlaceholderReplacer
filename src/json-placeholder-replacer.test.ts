@@ -1,8 +1,16 @@
 import {JsonPlaceholderReplacer} from "./json-placeholder-replacer";
 
-describe('JsonPlaceholderReplacer', function() {
+describe('JsonPlaceholderReplacer', function () {
 
-    it('should replace place holder {{}}', function() {
+    it('should handle undefined values exception', function () {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        expect(() => placeHolderReplacer.replace({
+            replaceable: undefined
+        })).not.toThrow();
+    });
+
+    it('should replace place holder {{}}', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -16,7 +24,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should replace place holder <<>>', function() {
+    it('should replace place holder <<>>', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -30,7 +38,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should replace big names', function() {
+    it('should replace big names', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -44,7 +52,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('last added map should have higher priority', function() {
+    it('last added map should have higher priority', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = "100";
@@ -61,7 +69,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(+expected);
     });
 
-    it('should navigate through variableMap', function() {
+    it('should navigate through variableMap', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
@@ -77,12 +85,12 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should not navigate through variableMap when a key is found', function() {
+    it('should not navigate through variableMap when a key is found', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
         placeHolderReplacer.addVariableMap({
-            "key.with.dot":  expected
+            "key.with.dot": expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
             replaceable: "<<key.with.dot>>"
@@ -91,7 +99,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should not navigate through variableMap when a key is found in deeper object', function() {
+    it('should not navigate through variableMap when a key is found in deeper object', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
@@ -107,7 +115,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should do nothing when nothing is found', function() {
+    it('should do nothing when nothing is found', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
@@ -123,7 +131,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe("<<key.not.found>>");
     });
 
-    it('should prefer short circuit', function() {
+    it('should prefer short circuit', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 'value';
@@ -140,7 +148,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should handle boolean values', function() {
+    it('should handle boolean values', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = true;
@@ -154,7 +162,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should not replace undefined placeHolder', function() {
+    it('should not replace undefined placeHolder', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const afterReplace: any = placeHolderReplacer.replace({
@@ -164,7 +172,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.replaceable).toBe("{{key}}");
     });
 
-    it('should replace full object placeHolder', function() {
+    it('should replace full object placeHolder', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
@@ -236,7 +244,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace.key).toBe("<<value>>");
     });
 
-    it('should not replace key placeHolder', function() {
+    it('should not replace key placeHolder', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
@@ -250,7 +258,7 @@ describe('JsonPlaceholderReplacer', function() {
         expect(afterReplace["{{key}}"]).toBe("value");
     });
 
-    it('should handle array substitution', function() {
+    it('should handle array substitution', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
@@ -260,10 +268,10 @@ describe('JsonPlaceholderReplacer', function() {
             key: ["string", "<<key>>", 0]
         });
 
-        expect(afterReplace.key).toEqual( ["string", "someValue", 0]);
+        expect(afterReplace.key).toEqual(["string", "someValue", 0]);
     });
 
-    it('should replace every occurrence', function() {
+    it('should replace every occurrence', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
@@ -273,10 +281,10 @@ describe('JsonPlaceholderReplacer', function() {
             key: ["string", "{{key}}", "<<key>>"]
         });
 
-        expect(afterReplace.key).toEqual( ["string", "someValue", "someValue"]);
+        expect(afterReplace.key).toEqual(["string", "someValue", "someValue"]);
     });
 
-    it('should handle array object substitution', function() {
+    it('should handle array object substitution', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
@@ -288,11 +296,11 @@ describe('JsonPlaceholderReplacer', function() {
             key: ["string", "{{key}}", 0]
         });
 
-        expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
+        expect(afterReplace.key).toEqual(["string", {"nested": "value"}, 0]);
         expect(afterReplace.key[1].nested).toEqual("value");
     });
 
-    it('should handle strings varMap substitution', function() {
+    it('should handle strings varMap substitution', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap(JSON.stringify({
@@ -304,11 +312,11 @@ describe('JsonPlaceholderReplacer', function() {
             key: ["string", "{{key}}", 0]
         });
 
-        expect(afterReplace.key).toEqual( [ "string", {"nested": "value"}, 0]);
+        expect(afterReplace.key).toEqual(["string", {"nested": "value"}, 0]);
         expect(afterReplace.key[1].nested).toEqual("value");
     });
 
-    it('should handle huge json', function() {
+    it('should handle huge json', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({key: "virgs"});
