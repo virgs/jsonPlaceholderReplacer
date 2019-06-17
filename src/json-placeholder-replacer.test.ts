@@ -340,4 +340,25 @@ describe('JsonPlaceholderReplacer', function () {
         afterReplace.requisition.subscription.map((sub: any) => expect(sub.key).toEqual("virgs"));
     });
 
+    it('should keep original type of string values', function () {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        placeHolderReplacer.addVariableMap({
+            key1: "123",
+            key2: "123.45",
+            key3: "true",
+            key4: "NaN",
+            key5: "null",
+            key6: "undefined",
+            key7: "[1, 2, 3]",
+            key8: "{ \"value\": 123 }"
+        });
+        const afterReplace: any = placeHolderReplacer.replace([
+            "{{key1}}", "{{key2}}", "{{key3}}", "{{key4}}",
+            "{{key5}}", "{{key6}}", "{{key7}}", "{{key8}}"
+        ]);
+
+        afterReplace.map((replacedValue: any) => expect(typeof replacedValue).toBe("string"));
+    });
+
 });
