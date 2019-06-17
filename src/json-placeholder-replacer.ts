@@ -64,6 +64,8 @@ export class JsonPlaceholderReplacer {
     private static stringify(variableValue: any): string | undefined {
         if (typeof variableValue == 'object') {
             return JSON.stringify(variableValue);
+        } else if (typeof variableValue == 'string') {
+            return `"${variableValue}"`;
         } else {
             return variableValue;
         }
