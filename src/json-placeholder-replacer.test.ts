@@ -66,7 +66,7 @@ describe('JsonPlaceholderReplacer', function () {
             replaceable: "{{key}}"
         });
 
-        expect(afterReplace.replaceable).toBe(+expected);
+        expect(afterReplace.replaceable).toBe(expected);
     });
 
     it('should navigate through variableMap', function () {
