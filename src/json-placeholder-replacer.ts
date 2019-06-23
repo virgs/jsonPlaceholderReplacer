@@ -27,13 +27,21 @@ export class JsonPlaceholderReplacer {
     }
 
     private replaceValue(node: string): any {
-        let replacer = (placeHolder: string): string => {
-            const path: string = placeHolder.substr(2, placeHolder.length - 4);
-            let inEveryMap = this.checkInEveryMap(path);
-            return inEveryMap !== undefined ? inEveryMap : placeHolder;
+        const getReplacer = (placeHolderIsInsideStringContext: boolean) => {
+            return (placeHolder: string): string => {
+                const path: string = placeHolder.substr(2, placeHolder.length - 4);
+                const mapCheckResult = this.checkInEveryMap(path);
+                if (mapCheckResult !== undefined) {
+                    const isStringLiteral = !placeHolderIsInsideStringContext && mapCheckResult.isString;
+                    return isStringLiteral ? `"${mapCheckResult.value}"` : mapCheckResult.value;
+                } else {
+                    return placeHolder;
+                }
+            };
         };
-        let output = node.replace(/{{[^}}]+}}/g, replacer)
-            .replace(/<<[^>>]+>>/g, replacer);
+        const placeHolderIsInsideStringContext = !/^{{[^}}]+}}$|^<<[^>>]+>>$/.test(node);
+        const output = node.replace(/({{[^}}]+}})|(<<[^>>]+>>)/g,
+            getReplacer(placeHolderIsInsideStringContext));
         try {
             return JSON.parse(output);
         } catch (exc) {
@@ -41,19 +49,20 @@ export class JsonPlaceholderReplacer {
         }
     }
 
-    private checkInEveryMap(path: string): string | undefined {
+    private checkInEveryMap(path: string): VariableMapCheckResult {
         let result = undefined;
         this.variablesMap.forEach(map => result = this.navigateThroughMap(map, path));
         return result;
     }
 
-    private navigateThroughMap(map: any, path: string): string | undefined {
+    private navigateThroughMap(map: any, path: string): VariableMapCheckResult {
         if (map === undefined) {
             return;
         }
         let shortCircuit = map[path];
         if (shortCircuit !== undefined) {
-            return JSON.stringify(shortCircuit);
+            const value = JsonPlaceholderReplacer.stringify(shortCircuit);
+            return { value, isString: typeof shortCircuit === 'string' };
         }
         let keys = path.split('.');
         const key: string = keys[0];
@@ -61,4 +70,11 @@ export class JsonPlaceholderReplacer {
         return this.navigateThroughMap(map[key], keys.join('.'));
     }
 
+    private static stringify(variableValue: any): any {
+        return typeof variableValue == 'object'
+            ? JSON.stringify(variableValue)
+            : variableValue;
+    }
 }
+
+type VariableMapCheckResult = undefined | { value: string, isString: boolean };
