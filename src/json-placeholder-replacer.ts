@@ -62,9 +62,7 @@ export class JsonPlaceholderReplacer {
         let shortCircuit = map[path];
         if (shortCircuit !== undefined) {
             const value = JsonPlaceholderReplacer.stringify(shortCircuit);
-            return value === undefined
-                ? undefined
-                : { value, isString: typeof shortCircuit === 'string' };
+            return { value, isString: typeof shortCircuit === 'string' };
         }
         let keys = path.split('.');
         const key: string = keys[0];
