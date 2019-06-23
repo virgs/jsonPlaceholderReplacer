@@ -361,4 +361,41 @@ describe('JsonPlaceholderReplacer', function () {
         afterReplace.map((replacedValue: any) => expect(typeof replacedValue).toBe("string"));
     });
 
+    it('should replace inside a string context', function () {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expectedAfterReplace = {
+            string: "String: hello world!",
+            stringWithInteger: "Integer: 123",
+            stringWithFloat: "Float: 1.23",
+            stringWithBoolean: "Boolean: true",
+            stringWithNaN: "NaN: NaN",
+            stringWithNull: "Null: null",
+            stringWithArray: "Array: [1,2,3]",
+            stringWithObject: "Object: {\"value\":123}",
+        };
+        placeHolderReplacer.addVariableMap({
+            string: "hello world!",
+            integer: 123,
+            float: 1.23,
+            boolean: true,
+            nan: NaN,
+            null: null,
+            array: [1, 2, 3],
+            object: { value: 123 }
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            string: "String: {{string}}",
+            stringWithInteger: "Integer: {{integer}}",
+            stringWithFloat: "Float: {{float}}",
+            stringWithBoolean: "Boolean: {{boolean}}",
+            stringWithNaN: "NaN: {{nan}}",
+            stringWithNull: "Null: {{null}}",
+            stringWithArray: "Array: {{array}}",
+            stringWithObject: "Object: {{object}}"
+        });
+
+        expect(afterReplace).toMatchObject(expectedAfterReplace);
+    });
+
 });
