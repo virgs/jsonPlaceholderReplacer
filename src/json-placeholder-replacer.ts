@@ -53,7 +53,7 @@ export class JsonPlaceholderReplacer {
         }
         let shortCircuit = map[path];
         if (shortCircuit !== undefined) {
-            return JsonPlaceholderReplacer.stringify(shortCircuit);
+            return JSON.stringify(shortCircuit);
         }
         let keys = path.split('.');
         const key: string = keys[0];
@@ -61,13 +61,4 @@ export class JsonPlaceholderReplacer {
         return this.navigateThroughMap(map[key], keys.join('.'));
     }
 
-    private static stringify(variableValue: any): string | undefined {
-        if (typeof variableValue == 'object') {
-            return JSON.stringify(variableValue);
-        } else if (typeof variableValue == 'string') {
-            return `"${variableValue}"`;
-        } else {
-            return variableValue;
-        }
-    }
 }
