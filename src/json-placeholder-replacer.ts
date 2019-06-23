@@ -71,11 +71,9 @@ export class JsonPlaceholderReplacer {
     }
 
     private static stringify(variableValue: any): any {
-        if (typeof variableValue == 'object') {
-            return JSON.stringify(variableValue);
-        } else {
-            return variableValue;
-        }
+        return typeof variableValue == 'object'
+            ? JSON.stringify(variableValue)
+            : variableValue;
     }
 }
 
