@@ -1,4 +1,4 @@
-import {JsonPlaceholderReplacer} from "./json-placeholder-replacer";
+import {JsonPlaceholderReplacer} from './json-placeholder-replacer';
 
 describe('JsonPlaceholderReplacer', function () {
 
@@ -18,7 +18,7 @@ describe('JsonPlaceholderReplacer', function () {
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "{{key}}"
+            replaceable: '{{key}}'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -32,7 +32,7 @@ describe('JsonPlaceholderReplacer', function () {
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key>>"
+            replaceable: '<<key>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -43,10 +43,10 @@ describe('JsonPlaceholderReplacer', function () {
 
         const expected = 100;
         placeHolderReplacer.addVariableMap({
-            "key-with-several/separatorsyeap~a_lot": expected
+            'key-with-several/separatorsyeap~a_lot': expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key-with-several/separatorsyeap~a_lot>>"
+            replaceable: '<<key-with-several/separatorsyeap~a_lot>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -55,15 +55,15 @@ describe('JsonPlaceholderReplacer', function () {
     it('last added map should have higher priority', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
-        const expected = "100";
+        const expected = '100';
         placeHolderReplacer.addVariableMap({
-            key: "useless"
+            key: 'useless'
         });
         placeHolderReplacer.addVariableMap({
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "{{key}}"
+            replaceable: '{{key}}'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -79,7 +79,7 @@ describe('JsonPlaceholderReplacer', function () {
             }
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key.nested>>"
+            replaceable: '<<key.nested>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -90,10 +90,10 @@ describe('JsonPlaceholderReplacer', function () {
 
         const expected = 'value';
         placeHolderReplacer.addVariableMap({
-            "key.with.dot": expected
+            'key.with.dot': expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key.with.dot>>"
+            replaceable: '<<key.with.dot>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -105,11 +105,11 @@ describe('JsonPlaceholderReplacer', function () {
         const expected = 'value';
         placeHolderReplacer.addVariableMap({
             key: {
-                "with.dot": expected
+                'with.dot': expected
             }
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key.with.dot>>"
+            replaceable: '<<key.with.dot>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -125,10 +125,10 @@ describe('JsonPlaceholderReplacer', function () {
             }
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key.not.found>>"
+            replaceable: '<<key.not.found>>'
         });
 
-        expect(afterReplace.replaceable).toBe("<<key.not.found>>");
+        expect(afterReplace.replaceable).toBe('<<key.not.found>>');
     });
 
     it('should prefer short circuit', function () {
@@ -137,12 +137,12 @@ describe('JsonPlaceholderReplacer', function () {
         const expected = 'value';
         placeHolderReplacer.addVariableMap({
             key: {
-                nested: "useless"
+                nested: 'useless'
             },
-            "key.nested": expected
+            'key.nested': expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key.nested>>"
+            replaceable: '<<key.nested>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -156,7 +156,7 @@ describe('JsonPlaceholderReplacer', function () {
             key: expected
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key>>"
+            replaceable: '<<key>>'
         });
 
         expect(afterReplace.replaceable).toBe(expected);
@@ -166,10 +166,10 @@ describe('JsonPlaceholderReplacer', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "{{key}}"
+            replaceable: '{{key}}'
         });
 
-        expect(afterReplace.replaceable).toBe("{{key}}");
+        expect(afterReplace.replaceable).toBe('{{key}}');
     });
 
     it('should replace full object placeHolder', function () {
@@ -179,17 +179,17 @@ describe('JsonPlaceholderReplacer', function () {
             key: {
                 nested: {
                     moreNested: {
-                        key: "value"
+                        key: 'value'
                     }
                 }
             }
         });
 
         const afterReplace: any = placeHolderReplacer.replace({
-            replaceable: "<<key>>"
+            replaceable: '<<key>>'
         });
 
-        expect(afterReplace.replaceable.nested.moreNested.key).toBe("value");
+        expect(afterReplace.replaceable.nested.moreNested.key).toBe('value');
     });
 
     it('should replace when value is 0', () => {
@@ -199,7 +199,7 @@ describe('JsonPlaceholderReplacer', function () {
             value: 0
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: "<<value>>"
+            key: '<<value>>'
         });
 
         expect(afterReplace.key).toBe(0);
@@ -212,7 +212,7 @@ describe('JsonPlaceholderReplacer', function () {
             value: ''
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: "<<value>>"
+            key: '<<value>>'
         });
 
         expect(afterReplace.key).toBe('');
@@ -225,7 +225,7 @@ describe('JsonPlaceholderReplacer', function () {
             value: null
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: "<<value>>"
+            key: '<<value>>'
         });
 
         expect(afterReplace.key).toBeNull();
@@ -238,50 +238,50 @@ describe('JsonPlaceholderReplacer', function () {
             value: undefined
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: "<<value>>"
+            key: '<<value>>'
         });
 
-        expect(afterReplace.key).toBe("<<value>>");
+        expect(afterReplace.key).toBe('<<value>>');
     });
 
     it('should not replace key placeHolder', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
-            key: "someValue"
+            key: 'someValue'
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            "{{key}}": "value"
+            '{{key}}': 'value'
         });
 
         expect(afterReplace.someValue).not.toBeDefined();
-        expect(afterReplace["{{key}}"]).toBe("value");
+        expect(afterReplace['{{key}}']).toBe('value');
     });
 
     it('should handle array substitution', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
-            key: "someValue"
+            key: 'someValue'
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "<<key>>", 0]
+            key: ['string', '<<key>>', 0]
         });
 
-        expect(afterReplace.key).toEqual(["string", "someValue", 0]);
+        expect(afterReplace.key).toEqual(['string', 'someValue', 0]);
     });
 
     it('should replace every occurrence', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
-            key: "someValue"
+            key: 'someValue'
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "{{key}}", "<<key>>"]
+            key: ['string', '{{key}}', '<<key>>']
         });
 
-        expect(afterReplace.key).toEqual(["string", "someValue", "someValue"]);
+        expect(afterReplace.key).toEqual(['string', 'someValue', 'someValue']);
     });
 
     it('should handle array object substitution', function () {
@@ -289,15 +289,15 @@ describe('JsonPlaceholderReplacer', function () {
 
         placeHolderReplacer.addVariableMap({
             key: {
-                nested: "value"
+                nested: 'value'
             }
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "{{key}}", 0]
+            key: ['string', '{{key}}', 0]
         });
 
-        expect(afterReplace.key).toEqual(["string", {"nested": "value"}, 0]);
-        expect(afterReplace.key[1].nested).toEqual("value");
+        expect(afterReplace.key).toEqual(['string', {'nested': 'value'}, 0]);
+        expect(afterReplace.key[1].nested).toEqual('value');
     });
 
     it('should handle strings varMap substitution', function () {
@@ -305,77 +305,77 @@ describe('JsonPlaceholderReplacer', function () {
 
         placeHolderReplacer.addVariableMap(JSON.stringify({
             key: {
-                nested: "value"
+                nested: 'value'
             }
         }));
         const afterReplace: any = placeHolderReplacer.replace({
-            key: ["string", "{{key}}", 0]
+            key: ['string', '{{key}}', 0]
         });
 
-        expect(afterReplace.key).toEqual(["string", {"nested": "value"}, 0]);
-        expect(afterReplace.key[1].nested).toEqual("value");
+        expect(afterReplace.key).toEqual(['string', {'nested': 'value'}, 0]);
+        expect(afterReplace.key[1].nested).toEqual('value');
     });
 
     it('should handle huge json', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
-        placeHolderReplacer.addVariableMap({key: "virgs"});
+        placeHolderReplacer.addVariableMap({key: 'virgs'});
         const afterReplace: any = placeHolderReplacer.replace({
             requisition: {
-                name: "someName",
+                name: 'someName',
                 subscription: [
                     {
-                        key: "<<key>>"
+                        key: '<<key>>'
                     },
                     {
-                        key: "{{key}}"
+                        key: '{{key}}'
                     },
                     {
-                        key: "{{key}}"
+                        key: '{{key}}'
                     }
                 ]
             }
         });
 
-        afterReplace.requisition.subscription.map((sub: any) => expect(sub.key).toEqual("virgs"));
+        afterReplace.requisition.subscription.map((sub: any) => expect(sub.key).toEqual('virgs'));
     });
 
     it('should keep original type of string values', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         placeHolderReplacer.addVariableMap({
-            key1: "123",
-            key2: "123.45",
-            key3: "true",
-            key4: "NaN",
-            key5: "null",
-            key6: "undefined",
-            key7: "[1, 2, 3]",
-            key8: "{ \"value\": 123 }"
+            key1: '123',
+            key2: '123.45',
+            key3: 'true',
+            key4: 'NaN',
+            key5: 'null',
+            key6: 'undefined',
+            key7: '[1, 2, 3]',
+            key8: '{ "value": 123 }'
         });
         const afterReplace: any = placeHolderReplacer.replace([
-            "{{key1}}", "{{key2}}", "{{key3}}", "{{key4}}",
-            "{{key5}}", "{{key6}}", "{{key7}}", "{{key8}}"
+            '{{key1}}', '{{key2}}', '{{key3}}', '{{key4}}',
+            '{{key5}}', '{{key6}}', '{{key7}}', '{{key8}}'
         ]);
 
-        afterReplace.map((replacedValue: any) => expect(typeof replacedValue).toBe("string"));
+        afterReplace.map((replacedValue: any) => expect(typeof replacedValue).toBe('string'));
     });
 
     it('should replace inside a string context', function () {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expectedAfterReplace = {
-            string: "String: hello world!",
-            stringWithInteger: "Integer: 123",
-            stringWithFloat: "Float: 1.23",
-            stringWithBoolean: "Boolean: true",
-            stringWithNaN: "NaN: NaN",
-            stringWithNull: "Null: null",
-            stringWithArray: "Array: [1,2,3]",
-            stringWithObject: "Object: {\"value\":123}",
+            string: 'String: hello world!',
+            stringWithInteger: 'Integer: 123',
+            stringWithFloat: 'Float: 1.23',
+            stringWithBoolean: 'Boolean: true',
+            stringWithNaN: 'NaN: NaN',
+            stringWithNull: 'Null: null',
+            stringWithArray: 'Array: [1,2,3]',
+            stringWithObject: 'Object: {"value":123}'
         };
         placeHolderReplacer.addVariableMap({
-            string: "hello world!",
+            string: 'hello world!',
             integer: 123,
             float: 1.23,
             boolean: true,
@@ -385,14 +385,14 @@ describe('JsonPlaceholderReplacer', function () {
             object: { value: 123 }
         });
         const afterReplace: any = placeHolderReplacer.replace({
-            string: "String: {{string}}",
-            stringWithInteger: "Integer: {{integer}}",
-            stringWithFloat: "Float: {{float}}",
-            stringWithBoolean: "Boolean: {{boolean}}",
-            stringWithNaN: "NaN: {{nan}}",
-            stringWithNull: "Null: {{null}}",
-            stringWithArray: "Array: {{array}}",
-            stringWithObject: "Object: {{object}}"
+            string: 'String: {{string}}',
+            stringWithInteger: 'Integer: {{integer}}',
+            stringWithFloat: 'Float: {{float}}',
+            stringWithBoolean: 'Boolean: {{boolean}}',
+            stringWithNaN: 'NaN: {{nan}}',
+            stringWithNull: 'Null: {{null}}',
+            stringWithArray: 'Array: {{array}}',
+            stringWithObject: 'Object: {{object}}'
         });
 
         expect(afterReplace).toMatchObject(expectedAfterReplace);
