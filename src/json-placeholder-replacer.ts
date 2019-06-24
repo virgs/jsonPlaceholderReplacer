@@ -28,26 +28,22 @@ export class JsonPlaceholderReplacer {
 
     private replaceValue(node: string): string {
         const placeHolderIsInsideStringContext = !/^{{[^}}]+}}$|^<<[^>>]+>>$/.test(node);
-        const getReplacer = () => {
-            return (placeHolder: string): string => {
-                const path: string = placeHolder.substr(2, placeHolder.length - 4);
-                const mapCheckResult = this.checkInEveryMap(path);
-                if (mapCheckResult !== undefined) {
-                    if (placeHolderIsInsideStringContext) {
-                        const parsed = JSON.parse(mapCheckResult);
-                        if (typeof parsed === 'object') {
-                            return JSON.stringify(parsed);
-                        }
-                        return parsed;
-                    }
-                    return mapCheckResult;
-                } else {
-                    return placeHolder;
-                }
-            };
+        const replacer = (placeHolder: string): string => {
+            const path: string = placeHolder.substr(2, placeHolder.length - 4);
+            const mapCheckResult = this.checkInEveryMap(path);
+            if (mapCheckResult === undefined) {
+                return placeHolder;
+            }
+            if (!placeHolderIsInsideStringContext) {
+                return mapCheckResult;
+            }
+            const parsed: any = JSON.parse(mapCheckResult);
+            if (typeof parsed === 'object') {
+                return JSON.stringify(parsed);
+            }
+            return parsed;
         };
-        const output = node.replace(/({{[^}}]+}})|(<<[^>>]+>>)/g,
-            getReplacer());
+        const output = node.replace(/({{[^}}]+}})|(<<[^>>]+>>)/g, replacer);
         try {
             return JSON.parse(output);
         } catch (exc) {
