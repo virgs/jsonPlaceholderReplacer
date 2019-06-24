@@ -14,7 +14,7 @@ export class JsonPlaceholderReplacer {
         return this.replaceChildren(json);
     }
 
-    private replaceChildren = (node: any): {} => {
+    private replaceChildren(node: any): {} {
         for (const key in node) {
             const attribute = node[key];
             if (typeof attribute == 'object') {
@@ -26,22 +26,28 @@ export class JsonPlaceholderReplacer {
         return node;
     }
 
-    private replaceValue(node: string): any {
-        const getReplacer = (placeHolderIsInsideStringContext: boolean) => {
+    private replaceValue(node: string): string {
+        const placeHolderIsInsideStringContext = !/^{{[^}}]+}}$|^<<[^>>]+>>$/.test(node);
+        const getReplacer = () => {
             return (placeHolder: string): string => {
                 const path: string = placeHolder.substr(2, placeHolder.length - 4);
                 const mapCheckResult = this.checkInEveryMap(path);
                 if (mapCheckResult !== undefined) {
-                    const isStringLiteral = !placeHolderIsInsideStringContext && mapCheckResult.isString;
-                    return isStringLiteral ? `"${mapCheckResult.value}"` : mapCheckResult.value;
+                    if (placeHolderIsInsideStringContext) {
+                        const parsed = JSON.parse(mapCheckResult);
+                        if (typeof parsed === 'object') {
+                            return JSON.stringify(parsed);
+                        }
+                        return parsed;
+                    }
+                    return mapCheckResult;
                 } else {
                     return placeHolder;
                 }
             };
         };
-        const placeHolderIsInsideStringContext = !/^{{[^}}]+}}$|^<<[^>>]+>>$/.test(node);
         const output = node.replace(/({{[^}}]+}})|(<<[^>>]+>>)/g,
-            getReplacer(placeHolderIsInsideStringContext));
+            getReplacer());
         try {
             return JSON.parse(output);
         } catch (exc) {
@@ -49,20 +55,19 @@ export class JsonPlaceholderReplacer {
         }
     }
 
-    private checkInEveryMap(path: string): VariableMapCheckResult {
+    private checkInEveryMap(path: string): string | undefined {
         let result = undefined;
         this.variablesMap.forEach(map => result = this.navigateThroughMap(map, path));
         return result;
     }
 
-    private navigateThroughMap(map: any, path: string): VariableMapCheckResult {
+    private navigateThroughMap(map: any, path: string): string | undefined {
         if (map === undefined) {
             return;
         }
-        let shortCircuit = map[path];
+        const shortCircuit = map[path];
         if (shortCircuit !== undefined) {
-            const value = JsonPlaceholderReplacer.stringify(shortCircuit);
-            return { value, isString: typeof shortCircuit === 'string' };
+            return JSON.stringify(shortCircuit);
         }
         let keys = path.split('.');
         const key: string = keys[0];
@@ -70,11 +75,4 @@ export class JsonPlaceholderReplacer {
         return this.navigateThroughMap(map[key], keys.join('.'));
     }
 
-    private static stringify(variableValue: any): any {
-        return typeof variableValue == 'object'
-            ? JSON.stringify(variableValue)
-            : variableValue;
-    }
 }
-
-type VariableMapCheckResult = undefined | { value: string, isString: boolean };

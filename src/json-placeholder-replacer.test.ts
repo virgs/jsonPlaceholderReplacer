@@ -343,7 +343,7 @@ describe('JsonPlaceholderReplacer', () => {
     it('should keep original type of string values', () => {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
-        placeHolderReplacer.addVariableMap({
+        const variableMap = {
             key1: '123',
             key2: '123.45',
             key3: 'true',
@@ -352,7 +352,8 @@ describe('JsonPlaceholderReplacer', () => {
             key6: 'undefined',
             key7: '[1, 2, 3]',
             key8: '{ "value": 123 }'
-        });
+        };
+        placeHolderReplacer.addVariableMap(variableMap);
         const afterReplace: any = placeHolderReplacer.replace([
             '{{key1}}', '{{key2}}', '{{key3}}', '{{key4}}',
             '{{key5}}', '{{key6}}', '{{key7}}', '{{key8}}'
@@ -369,7 +370,6 @@ describe('JsonPlaceholderReplacer', () => {
             stringWithInteger: 'Integer: 123',
             stringWithFloat: 'Float: 1.23',
             stringWithBoolean: 'Boolean: true',
-            stringWithNaN: 'NaN: NaN',
             stringWithNull: 'Null: null',
             stringWithArray: 'Array: [1,2,3]',
             stringWithObject: 'Object: {"value":123}'
@@ -379,23 +379,39 @@ describe('JsonPlaceholderReplacer', () => {
             integer: 123,
             float: 1.23,
             boolean: true,
-            nan: NaN,
             null: null,
             array: [1, 2, 3],
-            object: { value: 123 }
+            object: {value: 123}
         });
         const afterReplace: any = placeHolderReplacer.replace({
             string: 'String: {{string}}',
             stringWithInteger: 'Integer: {{integer}}',
             stringWithFloat: 'Float: {{float}}',
             stringWithBoolean: 'Boolean: {{boolean}}',
-            stringWithNaN: 'NaN: {{nan}}',
             stringWithNull: 'Null: {{null}}',
             stringWithArray: 'Array: {{array}}',
             stringWithObject: 'Object: {{object}}'
         });
 
         expect(afterReplace).toMatchObject(expectedAfterReplace);
+    });
+
+    it('should handle escape characters', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const multiLine = 'multi\nline';
+        const backSlash = 'back\\slash';
+        placeHolderReplacer.addVariableMap({
+            multiLine: multiLine,
+            backSlash: backSlash
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            multiLine: "{{multiLine}}",
+            backSlash: "{{backSlash}}"
+        });
+
+        expect(afterReplace.multiLine).toBe(multiLine);
+        expect(afterReplace.backSlash).toBe(backSlash);
     });
 
 });

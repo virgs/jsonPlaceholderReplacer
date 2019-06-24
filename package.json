@@ -7,7 +7,7 @@
   "scripts": {
     "test": "node_modules/.bin/jest && node dist/index.js rep map",
     "codeCoverage": "node_modules/.bin/jest --silent --coverage",
-    "lint": "node_modules/.bin/tslint --project tsconfig.json --force",
+    "lint": "node_modules/.bin/tslint --project tsconfig.json",
     "build": "tsc",
     "all": "npm run lint && npm run build && npm run codeCoverage && npm run test"
   },
@@ -33,13 +33,13 @@
   },
   "homepage": "https://github.com/lopidio/jsonPlaceholderReplacer#readme",
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^12.0.0",
-    "jest": "^24.4.0",
-    "ts-jest": "^24.0.0",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.13.1",
-    "typescript": "^3.3.3333"
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.10",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.2"
   },
   "bin": {
     "json-placeholder-replacer": "dist/index.js",
