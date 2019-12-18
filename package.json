@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lopidio/jsonPlaceholderReplacer.git"
+    "url": "git+https://github.com/virgs/jsonPlaceholderReplacer.git"
   },
   "keywords": [
     "json",
@@ -29,9 +29,9 @@
   "author": "Virgs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lopidio/jsonPlaceholderReplacer/issues"
+    "url": "https://github.com/virgs/jsonPlaceholderReplacer/issues"
   },
-  "homepage": "https://github.com/lopidio/jsonPlaceholderReplacer#readme",
+  "homepage": "https://github.com/virgs/jsonPlaceholderReplacer#readme",
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "@types/node": "^12.12.6",
