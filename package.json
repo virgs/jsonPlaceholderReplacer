@@ -33,13 +33,13 @@
   },
   "homepage": "https://github.com/virgs/jsonPlaceholderReplacer#readme",
   "devDependencies": {
-    "@types/jest": "^25.1.0",
-    "@types/node": "^13.1.0",
-    "jest": "^24.8.0",
-    "ts-jest": "^25.1.0",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.2"
+    "@types/jest": "^25.1.2",
+    "@types/node": "^13.7.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^25.2.0",
+    "ts-node": "^8.6.2",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.5"
   },
   "bin": {
     "json-placeholder-replacer": "dist/index.js",
