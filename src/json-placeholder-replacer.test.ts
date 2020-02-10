@@ -10,7 +10,7 @@ describe('JsonPlaceholderReplacer', () => {
         })).not.toThrow();
     });
 
-    it('should replace place holder {{}}', () => {
+    it('should replace placeholder {{}}', () => {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -24,7 +24,7 @@ describe('JsonPlaceholderReplacer', () => {
         expect(afterReplace.replaceable).toBe(expected);
     });
 
-    it('should replace place holder <<>>', () => {
+    it('should replace placeholder <<>>', () => {
         const placeHolderReplacer = new JsonPlaceholderReplacer();
 
         const expected = 100;
@@ -36,6 +36,78 @@ describe('JsonPlaceholderReplacer', () => {
         });
 
         expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should replace custom placeholder. such as: @{{- -}}@', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '@{{-', end: '-}}@'});
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: '@{{-key-}}@'
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should replace using multiple custom placeholder. such as: $$ $$ and := =:', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '$$', end: '$$'}, {begin: ':=', end: '=:'});
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected,
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            first: '$$key$$',
+            second: ':=key=:',
+        });
+
+        expect(afterReplace.first).toBe(expected);
+        expect(afterReplace.second).toBe(expected);
+    });
+
+    it('should accept identical placeholders. such as: @@ @@', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '@@', end: '@@'});
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: '@@key@@'
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should scape placeholders. such as: (())', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '((', end: '))'});
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: '((key))'
+        });
+
+        expect(afterReplace.replaceable).toBe(expected);
+    });
+
+    it('should NOT replace mixed placeholders {{>>', () => {
+        const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+        const expected = 100;
+        placeHolderReplacer.addVariableMap({
+            key: expected
+        });
+        const afterReplace: any = placeHolderReplacer.replace({
+            replaceable: '{{key>>'
+        });
+
+        expect(afterReplace.replaceable).toBe('{{key>>');
     });
 
     it('should replace big names', () => {

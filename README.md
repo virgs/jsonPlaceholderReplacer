@@ -1,10 +1,11 @@
 # jsonPlaceholderReplacer
 [![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer) 
-[![build status](https://travis-ci.org/lopidio/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/lopidio/jsonPlaceholderReplacer)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/maintainability) [![Greenkeeper badge](https://badges.greenkeeper.io/lopidio/jsonPlaceholderReplacer.svg)](https://greenkeeper.io/)
+[![build status](https://travis-ci.org/virgs/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/virgs/jsonPlaceholderReplacer)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/virgs/jsonPlaceholderReplacer/maintainability) [![Greenkeeper badge](https://badges.greenkeeper.io/virgs/jsonPlaceholderReplacer.svg)](https://greenkeeper.io/)
 
 Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object.
-All you have to do is to use double curly brackets **{{**placeholderKey**}}** or angle brackets **<<**placeholderKey**>>**, interchangeably, to identify the placeholder
+By default, all you have to do is to use double curly brackets **{{**placeholderKey**}}** or angle brackets **<<**placeholderKey**>>**, interchangeably, to identify the placeholder.
+Don't worry, if you don't like these default placeholders you can create your own. 
 
 ## CLI usage
 ```
@@ -35,6 +36,21 @@ const afterReplace = placeHolderReplacer.replace({
 //    replaceable: 100,
 //    otherReplaceableWithSameKey: 100,
 //    otherReplaceable: 200
+// }
+```
+
+It's possible to replace the default placeholders with some as cool as you want.
+```
+const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '@{{-', end: '-}}@'});
+placeHolderReplacer.addVariableMap({
+    key: "nice"
+});
+const afterReplace = placeHolderReplacer.replace({
+    replaceable: "@{{-key-}}@",
+})
+
+// afterReplace = {
+//    replaceable: "nice",
 // }
 ```
 

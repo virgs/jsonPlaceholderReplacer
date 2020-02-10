@@ -1,5 +1,36 @@
+const defaultDelimiterTags = [
+    {
+        begin: '{{',
+        end: '}}'
+    },
+    {
+        begin: '<<',
+        end: '>>'
+    }
+];
+
+export type DelimiterTag = {
+    begin: string;
+    end: string;
+    escapedBeginning?: string;
+    escapedEnding?: string;
+};
+
 export class JsonPlaceholderReplacer {
     private variablesMap: {}[] = [];
+    private readonly delimiterTags: DelimiterTag[];
+
+    public constructor(...delimiterTags: DelimiterTag[]) {
+        if (delimiterTags.length === 0) {
+            delimiterTags = defaultDelimiterTags;
+        }
+        const escapeRegExp = (text: string) => text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        this.delimiterTags = delimiterTags.map(tag => ({
+            ...tag,
+            escapedBeginning: escapeRegExp(tag.begin),
+            escapedEnding: escapeRegExp(tag.end),
+        }));
+    }
 
     public addVariableMap(variableMap: object | string): JsonPlaceholderReplacer {
         if (typeof variableMap == 'string') {
@@ -27,9 +58,13 @@ export class JsonPlaceholderReplacer {
     }
 
     private replaceValue(node: string): string {
-        const placeHolderIsInsideStringContext = !/^{{[^}}]+}}$|^<<[^>>]+>>$/.test(node);
-        const replacer = (placeHolder: string): string => {
-            const path: string = placeHolder.substr(2, placeHolder.length - 4);
+        const delimiterTagRegex = this.delimiterTags
+            .map(delimiterTag => `^${delimiterTag.begin}[^${delimiterTag.end}]+${delimiterTag.end}$`).join('|');
+        const regExp = new RegExp(delimiterTagRegex);
+        const placeHolderIsInsideStringContext = !regExp.test(node);
+        const replacer = (delimiterTag: DelimiterTag) => (placeHolder: string): string => {
+            const path: string = placeHolder.substr(delimiterTag.begin.length,
+                placeHolder.length - (delimiterTag.begin.length + delimiterTag.end.length));
             const mapCheckResult = this.checkInEveryMap(path);
             if (mapCheckResult === undefined) {
                 return placeHolder;
@@ -43,7 +78,12 @@ export class JsonPlaceholderReplacer {
             }
             return parsed;
         };
-        const output = node.replace(/({{[^}}]+}})|(<<[^>>]+>>)/g, replacer);
+
+        const output = this.delimiterTags
+            .reduce((acc, delimiterTag) => {
+                const regex = new RegExp(`(${delimiterTag.escapedBeginning}[^${delimiterTag.escapedEnding}]+${delimiterTag.escapedEnding})`, 'g');
+                return acc.replace(regex, replacer(delimiterTag));
+            }, node);
         try {
             return JSON.parse(output);
         } catch (exc) {
