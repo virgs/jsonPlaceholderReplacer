@@ -62,7 +62,20 @@ export class JsonPlaceholderReplacer {
             .map(delimiterTag => `^${delimiterTag.begin}[^${delimiterTag.end}]+${delimiterTag.end}$`).join('|');
         const regExp = new RegExp(delimiterTagRegex);
         const placeHolderIsInsideStringContext = !regExp.test(node);
-        const replacer = (delimiterTag: DelimiterTag) => (placeHolder: string): string => {
+        const output = this.delimiterTags
+            .reduce((acc, delimiterTag) => {
+                const regex = new RegExp(`(${delimiterTag.escapedBeginning}[^${delimiterTag.escapedEnding}]+${delimiterTag.escapedEnding})`, 'g');
+                return acc.replace(regex, this.replacer(placeHolderIsInsideStringContext)(delimiterTag));
+            }, node);
+        try {
+            return JSON.parse(output);
+        } catch (exc) {
+            return output;
+        }
+    }
+
+    private replacer(placeHolderIsInsideStringContext: boolean) {
+        return (delimiterTag: DelimiterTag) => (placeHolder: string): string => {
             const path: string = placeHolder.substr(delimiterTag.begin.length,
                 placeHolder.length - (delimiterTag.begin.length + delimiterTag.end.length));
             const mapCheckResult = this.checkInEveryMap(path);
@@ -78,17 +91,6 @@ export class JsonPlaceholderReplacer {
             }
             return parsed;
         };
-
-        const output = this.delimiterTags
-            .reduce((acc, delimiterTag) => {
-                const regex = new RegExp(`(${delimiterTag.escapedBeginning}[^${delimiterTag.escapedEnding}]+${delimiterTag.escapedEnding})`, 'g');
-                return acc.replace(regex, replacer(delimiterTag));
-            }, node);
-        try {
-            return JSON.parse(output);
-        } catch (exc) {
-            return output;
-        }
     }
 
     private checkInEveryMap(path: string): string | undefined {
