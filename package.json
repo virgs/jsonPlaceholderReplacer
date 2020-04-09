@@ -34,7 +34,7 @@
   "homepage": "https://github.com/virgs/jsonPlaceholderReplacer#readme",
   "devDependencies": {
     "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.11.1",
     "jest": "^24.9.0",
     "ts-jest": "^25.2.1",
     "ts-node": "^8.6.2",
