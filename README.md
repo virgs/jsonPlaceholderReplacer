@@ -130,7 +130,7 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-And, of course, it handles, array substitution as well:
+And, of course, it handles array substitution as well:
 ```
 placeHolderReplacer.addVariableMap({
     key: 987,
