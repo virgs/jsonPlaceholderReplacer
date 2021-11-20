@@ -3,7 +3,7 @@
 [![build status](https://travis-ci.org/virgs/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/virgs/jsonPlaceholderReplacer)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/virgs/jsonPlaceholderReplacer/maintainability) [![Greenkeeper badge](https://badges.greenkeeper.io/virgs/jsonPlaceholderReplacer.svg)](https://greenkeeper.io/)
 
-Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object.
+Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object/JSON.
 By default, all you have to do is to use double curly brackets **{{**placeholderKey**}}** or angle brackets **<<**placeholderKey**>>**, interchangeably, to identify the placeholder.
 Don't worry, if you don't like these default placeholders you can create your own. 
 
@@ -14,6 +14,25 @@ $ json-placeholder-replacer replaceableFilename [...variableMaps]
 Example:
         
 ```$ json-placeholder-replacer ```[replaceable.json](/rep) [variable.map](/map)
+
+Would result:
+
+```
+replaceable.json: 
+        {
+	        "curly": "{{key}}",
+        	"angle": "<<key>>"
+        }
+variable.map: 
+        {
+                "key": 10
+        }
+result:
+        {
+                "curly": 10,
+                "angle": 10
+        }
+```
 
 
 ## Library usage:
@@ -89,7 +108,7 @@ const afterReplace = placeHolderReplacer.replace({
 //    replaceable: "higherPriority"
 // }
 ```
-It keeps original variable types. So, if, in the map, a variable is boolean/string/number/object when it's replaced, it still is boolean/string/number/object:
+It keeps original variable types. So, if, in the map, a variable is boolean/string/number/object when it's replaced, it remains as boolean/string/number/object:
 ```
 placeHolderReplacer.addVariableMap({
     booleanKey: true,
@@ -117,7 +136,7 @@ const afterReplace = placeHolderReplacer.replace({
 
 ```
 
-Just to make it clear, it does not replace the placeholder Key:
+Just to make it clearer, it does not replace the placeholder Key:
 ```
 placeHolderReplacer.addVariableMap({
     key: "someValue"
