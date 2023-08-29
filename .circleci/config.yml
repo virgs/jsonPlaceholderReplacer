@@ -48,9 +48,6 @@ jobs:
             ./cc-test-reporter format-coverage -t clover coverage/clover.xml --output coverage/codeclimate.json
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-      - run:
-          name: Print ls
-          command: ls -alho
   deploy-job: # this can be any name you choose
     working_directory: ~/project
     docker:
