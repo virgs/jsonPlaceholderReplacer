@@ -77,4 +77,4 @@ workflows:
       - deploy-job: 
           filters:
             branches:
-              ignore: main
+              only: main
