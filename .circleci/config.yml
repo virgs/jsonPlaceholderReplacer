@@ -1,5 +1,3 @@
-# npm version patch
-
 # https://circleci.com/docs/language-javascript/
 # This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
