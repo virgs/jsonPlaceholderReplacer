@@ -15,6 +15,12 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            # download test reporter as a static binary
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
           command: npm run lint
           name: Lint app
       - run:
@@ -24,8 +30,17 @@ jobs:
           command: npm run test
           name: Run tests
       - run:
-          command: npm run codeCoverage
-          name: Check code coverage
+          name: Code Climate Test Coverage
+          command: |
+            ./cc-test-reporter before-build
+            npm run codeCoverage
+            ./cc-test-reporter format-coverage -t clover coverage/clover.xml --output coverage/codeclimate.json
+            cp coverage/clover.xml .     
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-artifacts
       - persist_to_workspace:
           root: ~/project
           paths:
