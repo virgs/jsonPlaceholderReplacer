@@ -48,6 +48,9 @@ jobs:
             ./cc-test-reporter format-coverage -t clover coverage/clover.xml --output coverage/codeclimate.json
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+      - run:
+          name: Print ls
+          command: ls -alho
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -68,11 +71,11 @@ jobs:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
-          name: Print
-          command: cat package.json
+          name: Print ls
+          command: ls -alho
       - run:
           name: Print package
-          command: ls -alho
+          command: cat package.json
       # - run:
           # name: Publish package
           # make sure you run npm vestion patch locally before this step
