@@ -73,7 +73,7 @@ jobs:
           at: ~/project
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
+          command: npm set //registry.npmjs.org/:_authToken=$NPM_TOKEN
       - run:
           name: Publish package
           # make sure you run `npm vestion major|minor|patch` locally before this step
