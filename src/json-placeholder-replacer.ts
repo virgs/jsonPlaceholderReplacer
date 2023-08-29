@@ -118,19 +118,7 @@ export class JsonPlaceholderReplacer {
   private replacer (placeHolderIsInsideStringContext: boolean) {
     return (delimiterTag: DelimiterTag) =>
       (placeHolder: string): string => {
-        const path: string = placeHolder.substring(
-          delimiterTag.begin.length,
-          placeHolder.length - delimiterTag.begin.length
-        )
-        let tag = path
-        let defaultValue: string | undefined
-        const defaultValueSeparatorIndex = path.indexOf(
-          this.configuration.defaultValueSeparator
-        )
-        if (defaultValueSeparatorIndex > 0) {
-          tag = path.substring(0, defaultValueSeparatorIndex)
-          defaultValue = path.substring(defaultValueSeparatorIndex + 1)
-        }
+        const { tag, defaultValue } = this.parseTag(placeHolder, delimiterTag)
 
         const mapCheckResult = this.checkInEveryMap(tag)
         if (mapCheckResult === undefined) {
@@ -148,6 +136,26 @@ export class JsonPlaceholderReplacer {
         }
         return parsed
       }
+  }
+
+  private parseTag (
+    placeHolder: string,
+    delimiterTag: DelimiterTag
+  ): { tag: string, defaultValue: string | undefined } {
+    const path: string = placeHolder.substring(
+      delimiterTag.begin.length,
+      placeHolder.length - delimiterTag.begin.length
+    )
+    let tag = path
+    let defaultValue: string | undefined
+    const defaultValueSeparatorIndex = path.indexOf(
+      this.configuration.defaultValueSeparator
+    )
+    if (defaultValueSeparatorIndex > 0) {
+      tag = path.substring(0, defaultValueSeparatorIndex)
+      defaultValue = path.substring(defaultValueSeparatorIndex + 1)
+    }
+    return { tag, defaultValue }
   }
 
   private checkInEveryMap (path: string): string | undefined {
