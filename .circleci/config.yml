@@ -56,13 +56,9 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies- # fallback to using the latest cache if no exact match is found
       - run:
-          command: npm run build
           name: Build app
+          command: npm run build
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
