@@ -56,10 +56,10 @@ jobs:
       - store_artifacts:
           path: test-artifacts
       - persist_to_workspace:
-          root: ~/project
+          root: .
           paths:
-            - .
-            - "package.json"
+            - dist
+            - package.json
   deploy-job: # this can be any name you choose
     working_directory: ~/project
     docker:
@@ -72,7 +72,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
           name: Print ls
-          command: ls -alho
+          command: ls -ralho
       - run:
           name: Print package
           command: cat package.json
