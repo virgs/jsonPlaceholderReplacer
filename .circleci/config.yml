@@ -10,8 +10,8 @@ orbs:
   node: circleci/node@5.0.2
 
 defaults: &defaults
-  executor: node/default # use the default executor defined within the orb
   working_directory: ~/project
+  executor: node/default # use the default executor defined within the orb
 
 jobs:
   build-job: # this can be any name you choose
