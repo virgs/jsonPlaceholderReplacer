@@ -1,6 +1,6 @@
 # jsonPlaceholderReplacer
 [![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer) 
-[![build status](https://travis-ci.org/virgs/jsonPlaceholderReplacer.svg?branch=master)](https://travis-ci.org/virgs/jsonPlaceholderReplacer)
+[![build status](https://circleci.com/gh/virgs/jsonPlaceholderReplacer.svg?style=shield)](https://circleci.com/gh/virgs/jsonPlaceholderReplacer.svg?style=svg))
 [![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/virgs/jsonPlaceholderReplacer/maintainability) [![Greenkeeper badge](https://badges.greenkeeper.io/virgs/jsonPlaceholderReplacer.svg)](https://greenkeeper.io/)
 
 Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object/JSON.
