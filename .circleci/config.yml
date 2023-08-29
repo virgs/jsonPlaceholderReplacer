@@ -56,7 +56,7 @@ jobs:
       - store_artifacts:
           path: test-artifacts
       - persist_to_workspace:
-          root: .
+          root: ~/project
           paths:
             - dist
             - package.json
