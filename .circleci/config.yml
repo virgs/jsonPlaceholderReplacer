@@ -2,6 +2,8 @@
 # This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
 
+# https://circleci.com/blog/publishing-npm-packages-using-circleci-2-0/
+
 # Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
 # See: https://circleci.com/docs/orb-intro/
 orbs:
@@ -20,7 +22,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies- # fallback to using the latest cache if no exact match is found
       - run:
-          name: Setup Code Climate test-reporter
+          name: Setup code climate test-reporter
           command: |
             # download test reporter as a static binary
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -46,21 +48,21 @@ jobs:
             ./cc-test-reporter format-coverage -t clover coverage/clover.xml --output coverage/codeclimate.json
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-artifacts
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
   deploy-job: # this can be any name you choose
     working_directory: ~/project
     docker:
       - image: circleci/node:8.9.1
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies- # fallback to using the latest cache if no exact match is found
+      - run:
+          command: npm run build
+          name: Build app
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
