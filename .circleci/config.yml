@@ -65,9 +65,6 @@ jobs:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
-          name: Bump patch
-          command: npm version patch
-      - run:
           name: Publish package
           command: ls
 workflows:
