@@ -1,60 +1,65 @@
 # jsonPlaceholderReplacer
-[![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer) 
+
+[![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer)
 [![build status](https://circleci.com/gh/virgs/jsonPlaceholderReplacer.svg?style=shield)](https://app.circleci.com/pipelines/github/virgs/jsonPlaceholderReplacer)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/maintainability) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/test_coverage)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/test_coverage)
 [![Known Vulnerabilities](https://snyk.io/test/github/virgs/jsonPlaceholderReplacer/badge.svg)](https://app.snyk.io/)
 
-
-
-
 Lightweight yet really powerful typescript library/cli to replace placeholders in an javascript object/JSON.
 By default, all you have to do is to use double curly brackets **{{**placeholderKey**}}** or angle brackets **<<**placeholderKey**>>**, interchangeably, to identify the placeholder.
-Don't worry, if you don't like these default placeholders you can create your own. 
+Don't worry, if you don't like these default placeholders you can create your own.
 
 ## CLI usage
-```
-$ json-placeholder-replacer replaceableFilename [...variableMaps]
-```
-Example:
-        
-```$ json-placeholder-replacer ```[replaceable.json](/rep) [variable.map](/map)
 
-Would result:
-
-```
-replaceable.json: 
-        {
-	        "curly": "{{key}}",
-        	"angle": "<<key>>"
-        }
-variable.map: 
-        {
-                "key": 10
-        }
-result:
-        {
-                "curly": 10,
-                "angle": 10
-        }
+```shell
+json-placeholder-replacer replaceableFilename [...variableMaps]
 ```
 
+### Example
 
-## Library usage:
+````shell
+json-placeholder-replacer ```[replaceable.json](/rep) [variable.map](/map)
+````
+
+### Would result
+
+```shell
+cat replaceable.json
+        # {
+        #  "curly": "{{key}}",
+        #  "angle": "<<key>>"
+        # }
+cat variable.map:
+        # {
+        #         "key": 10,
+        #         "not-mapped": 20
+        # }
+json-placeholder-replacer replaceable.json variable.map
+        # {
+        #         "curly": 10,
+        #         "angle": 10,
+        #         "not-mapped": 20
+        # }
+```
+
+## Library usage
+
 As simples as:
-```
-import {JsonPlaceholderReplacer} from "json-placeholder-replacer";
+
+```typescript
+import { JsonPlaceholderReplacer } from "json-placeholder-replacer";
 const placeHolderReplacer = new JsonPlaceholderReplacer();
 
 placeHolderReplacer.addVariableMap({
-    key: 100,
-    otherKey: 200
+  key: 100,
+  otherKey: 200,
 });
 const afterReplace = placeHolderReplacer.replace({
-    replaceable: "{{key}}",
-    otherReplaceableWithSameKey: "<<key>>",
-    otherReplaceable: "{{otherKey}}"
-})
+  replaceable: "{{key}}",
+  otherReplaceableWithSameKey: "<<key>>",
+  otherReplaceable: "{{otherKey}}",
+});
 
 // afterReplace = {
 //    replaceable: 100,
@@ -63,33 +68,37 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-It's possible to replace the default placeholders with some as cool as you want.
-```
-const placeHolderReplacer = new JsonPlaceholderReplacer({begin: '@{{-', end: '-}}@'});
+### You can replace the default placeholders with some as cool as you want
+
+```typescript
+const placeHolderReplacer = new JsonPlaceholderReplacer({
+  delimiterTags: [{ begin: "@{{-", end: "-}}@" }],
+});
 placeHolderReplacer.addVariableMap({
-    key: "nice"
+  key: "nice",
 });
 const afterReplace = placeHolderReplacer.replace({
-    replaceable: "@{{-key-}}@",
-})
+  replaceable: "@{{-key-}}@",
+});
 
 // afterReplace = {
 //    replaceable: "nice",
 // }
 ```
 
-It's possible to add more than one variables map.
-```
+### It's also possible to add more than one variables map
+
+```typescript
 placeHolderReplacer.addVariableMap({
-    firstMapKey: "1"
+  firstMapKey: "1",
 });
 placeHolderReplacer.addVariableMap({
-    secondMapKey: 2
+  secondMapKey: 2,
 });
 const afterReplace = placeHolderReplacer.replace({
-    replaceable: "{{firstMapKey}}",
-    otherReplaceable: "<<secondMapKey>>"
-})
+  replaceable: "{{firstMapKey}}",
+  otherReplaceable: "<<secondMapKey>>",
+});
 
 // afterReplace = {
 //    replaceable: "1",
@@ -97,38 +106,41 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-And the last added maps have higher priority, so:
-```
+### And the last added maps have higher priority, so
+
+```typescript
 placeHolderReplacer.addVariableMap({
-    id: "lowerPriority"
+  id: "lowerPriority",
 });
 placeHolderReplacer.addVariableMap({
-    id: "higherPriority"
+  id: "higherPriority",
 });
 const afterReplace = placeHolderReplacer.replace({
-    replaceable: "{{id}}"
-})
+  replaceable: "{{id}}",
+});
 
 // afterReplace = {
 //    replaceable: "higherPriority"
 // }
 ```
-It keeps original variable types. So, if, in the map, a variable is boolean/string/number/object when it's replaced, it remains as boolean/string/number/object:
-```
+
+### It keeps original variable types. So, if, in the map, a variable is boolean/string/number/object when it's replaced, it remains as boolean/string/number/object
+
+```typescript
 placeHolderReplacer.addVariableMap({
-    booleanKey: true,
-    stringKey: "string",
-    numberKey: 10,
-    objectKey: {
-      inner: "inner"
-    }
+  booleanKey: true,
+  stringKey: "string",
+  numberKey: 10,
+  objectKey: {
+    inner: "inner",
+  },
 });
 const afterReplace = placeHolderReplacer.replace({
-    booleanReplaceable: "{{booleanKey}}",
-    stringReplaceable: "{{stringKey}}",
-    numberReplaceable: "{{numberKey}}",
-    objectReplaceable: "{{objectKey}}"
-})
+  booleanReplaceable: "{{booleanKey}}",
+  stringReplaceable: "{{stringKey}}",
+  numberReplaceable: "{{numberKey}}",
+  objectReplaceable: "{{objectKey}}",
+});
 
 // afterReplace = {
 //    booleanReplaceable: true,
@@ -138,24 +150,25 @@ const afterReplace = placeHolderReplacer.replace({
 //      inner: "inner"
 //    }
 // }
-
 ```
 
-Just to make it clearer, it does not replace the placeholder Key:
-```
+### Just to make it clearer, it does not replace the placeholder Key
+
+```typescript
 placeHolderReplacer.addVariableMap({
-    key: "someValue"
+  key: "someValue",
 });
 const afterReplace = placeHolderReplacer.replace({
-    "{{key}}": "value"
-})
+  "{{key}}": "value",
+});
 // afterReplace = {
 //    "{{key}}": "value"
 // }
 ```
 
-And, of course, it handles array substitution as well:
-```
+### And, of course, it handles array substitution as well
+
+```typescript
 placeHolderReplacer.addVariableMap({
     key: 987,
     objectReplaceable: {
@@ -173,19 +186,53 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-Want to get nested elements? Go for it!
-```
+### Want to get nested elements? Go for it
+
+```typescript
 placeHolderReplacer.addVariableMap({
-    key: {
-        nested: "value"
-    }
+  key: {
+    nested: "value",
+  },
 });
 const afterReplace: any = placeHolderReplacer.replace({
-    replaceable: "<<key.nested>>"
+  replaceable: "<<key.nested>>",
 });
 
 // afterReplace = {
 //    replaceable: "value"
 // }
+```
 
+### This feature allows you to have default values in case you don't have them mapped
+
+```typescript
+placeHolderReplacer.addVariableMap({
+  key: "value",
+});
+const afterReplace: any = placeHolderReplacer.replace({
+  replaceable: "<<not-found-key:default-value>>",
+});
+
+// afterReplace = {
+//    replaceable: "default-value"
+// }
+```
+
+### Of course, you can also change what is the default value separator (defaults to ':')
+
+```typescript
+const placeHolderReplacer = new JsonPlaceholderReplacer({
+  defaultValueSeparator: "=",
+});
+
+placeHolderReplacer.addVariableMap({
+  key: "value",
+});
+const afterReplace: any = placeHolderReplacer.replace({
+  replaceable: "<<not-found-key=default-value>>", // Note the '=' character here
+});
+
+// afterReplace = {
+//    replaceable: "default-value"
+// }
 ```
