@@ -2,6 +2,8 @@
 # This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
 
+# https://circleci.com/blog/publishing-npm-packages-using-circleci-2-0/
+
 # Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
 # See: https://circleci.com/docs/orb-intro/
 orbs:
@@ -20,7 +22,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies- # fallback to using the latest cache if no exact match is found
       - run:
-          name: Setup Code Climate test-reporter
+          name: Setup code climate test-reporter
           command: |
             # download test reporter as a static binary
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -54,6 +56,7 @@ jobs:
           root: ~/project
           paths:
             - .
+            - "package.json"
   deploy-job: # this can be any name you choose
     working_directory: ~/project
     docker:
@@ -65,9 +68,15 @@ jobs:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
-          name: Publish package
+          name: Print
+          command: cat package.json
+      - run:
+          name: Print package
+          command: ls -alho
+      # - run:
+          # name: Publish package
           # make sure you run npm vestion patch locally before this step
-          command: npm publish
+          # command: npm publish
 workflows:
   pipeline-workflow: # this can be any name you choose
     jobs:
@@ -78,4 +87,4 @@ workflows:
       - deploy-job: 
           filters:
             branches:
-              only: main
+              ignore: main
