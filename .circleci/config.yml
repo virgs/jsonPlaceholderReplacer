@@ -6,21 +6,47 @@ version: 2.1
 
 # Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
 # See: https://circleci.com/docs/orb-intro/
-orbs:
-  node: circleci/node@5.0.2
+# orbs:
+#   node: circleci/node@5.0.2
+
+defaults: &defaults
+  working_directory: ~/project
+  docker:
+    - image: circleci/node:8.9.1
 
 jobs:
   build-job: # this can be any name you choose
-    executor: node/default # use the default executor defined within the circleci/node@5.0.2 orb
-    working_directory: ~/project
+    <<: *defaults
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies- # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies- # fallback to using the latest cache if no exact match is found
+      - run:
+          name: Setup code climate test-reporter
+          command: |
+            # download test reporter as a static binary
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          command: npm run build
+          name: Build app
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  test-job: # this can be any name you choose
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Setup code climate test-reporter
           command: |
@@ -31,15 +57,8 @@ jobs:
           command: npm run lint
           name: Lint app
       - run:
-          command: npm run build
-          name: Build app
-      - run:
           command: npm run test
           name: Run tests
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: Code Climate Test Coverage
           command: |
@@ -49,32 +68,31 @@ jobs:
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
   deploy-job: # this can be any name you choose
-    working_directory: ~/project
-    docker:
-      - image: circleci/node:8.9.1
+    <<: *defaults
     steps:
-      - checkout
-      - run:
-          name: Install app
-          command: npm install
-      - run:
-          name: Build app
-          command: npm run build
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
           name: Publish package
-          # make sure you run npm vestion patch locally before this step
+          # make sure you run `npm vestion major|minor|patch` locally before this step
           command: npm publish
+
 workflows:
   pipeline-workflow: # this can be any name you choose
     jobs:
-      - build-job:
+      - build-job
+      - test-job:
+          requires:
+            - build-job
           filters:
             branches:
               ignore: main
-      - deploy-job: 
+      - deploy-job:
+          requires:
+            - build-job
           filters:
             branches:
               only: main
