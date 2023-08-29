@@ -51,35 +51,28 @@ jobs:
       - run:
           name: Print ls
           command: ls -alho
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-artifacts
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - dist
-            - package.json
   deploy-job: # this can be any name you choose
     working_directory: ~/project
     docker:
       - image: circleci/node:8.9.1
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies- # fallback to using the latest cache if no exact match is found
+      - run:
+          command: npm run build
+          name: Build app
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
-          name: Print ls
-          command: ls -ralho
-      - run:
-          name: Print package
-          command: cat package.json
-      # - run:
-          # name: Publish package
+          name: Publish package
           # make sure you run npm vestion patch locally before this step
-          # command: npm publish
+          command: npm publish
 workflows:
   pipeline-workflow: # this can be any name you choose
     jobs:
@@ -90,4 +83,4 @@ workflows:
       - deploy-job: 
           filters:
             branches:
-              ignore: main
+              only: main
