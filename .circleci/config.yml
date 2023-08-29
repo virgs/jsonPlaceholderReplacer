@@ -66,6 +66,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
           name: Publish package
+          # make sure you run npm vestion patch locally before this step
           command: npm publish
 workflows:
   pipeline-workflow: # this can be any name you choose
