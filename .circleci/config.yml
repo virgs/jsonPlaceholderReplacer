@@ -1,14 +1,4 @@
-workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
-    jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '16.10'
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
+# npm version patch
 
 # https://circleci.com/docs/language-javascript/
 # This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
@@ -27,14 +17,14 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          command: npm run lint
+          name: Lint app
+      - run:
           command: npm run build
           name: Build app
       - run:
           command: npm run test
           name: Run tests
-      - run:
-          command: npm run lint
-          name: Lint app
       - run:
           command: npm run codeCoverage
           name: Check code coverage
