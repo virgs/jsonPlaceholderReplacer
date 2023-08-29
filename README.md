@@ -1,7 +1,8 @@
 # jsonPlaceholderReplacer
 [![npm version](https://badge.fury.io/js/json-placeholder-replacer.svg)](https://badge.fury.io/js/json-placeholder-replacer) 
 [![build status](https://circleci.com/gh/virgs/jsonPlaceholderReplacer.svg?style=shield)](https://app.circleci.com/pipelines/github/virgs/jsonPlaceholderReplacer)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/virgs/jsonPlaceholderReplacer/maintainability) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/maintainability)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/maintainability) 
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6e586ff6eb12a67da08e/test_coverage)](https://codeclimate.com/github/lopidio/jsonPlaceholderReplacer/test_coverage)
 [![Known Vulnerabilities](https://snyk.io/test/github/virgs/jsonPlaceholderReplacer/badge.svg)](https://app.snyk.io/)
 
 
