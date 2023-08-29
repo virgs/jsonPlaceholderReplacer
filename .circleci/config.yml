@@ -72,8 +72,6 @@ workflows:
             branches:
               ignore: main
       - deploy:
-          requires:
-            - build-job
           filters:
             branches:
               only: main
