@@ -8,7 +8,7 @@ orbs:
   node: circleci/node@5.0.2
 
 jobs:
-  pipeline-job:
+  pipeline-job: # this can be any name you choose
     executor: node/default # use the default executor defined within the circleci/node@5.0.2 orb
     steps:
       - checkout
