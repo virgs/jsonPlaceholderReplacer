@@ -10,10 +10,15 @@ orbs:
 jobs:
   build-job: # this can be any name you choose
     executor: node/default # use the default executor defined within the circleci/node@5.0.2 orb
+    working_directory: ~/project
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies- # fallback to using the latest cache if no exact match is found
       - run:
           name: Setup Code Climate test-reporter
           command: |
@@ -49,7 +54,8 @@ jobs:
           root: ~/project
           paths:
             - .
-  deploy:
+  deploy-job: # this can be any name you choose
+    working_directory: ~/project
     docker:
       - image: circleci/node:8.9.1
     steps:
@@ -57,12 +63,10 @@ jobs:
           at: ~/project
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/rep
-      - run:
-          name: Bump patch
-          command: npm version patch
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" ~/project/.npmrc
       - run:
           name: Publish package
+          # make sure you run npm vestion patch locally before this step
           command: npm publish
 workflows:
   pipeline-workflow: # this can be any name you choose
@@ -71,7 +75,7 @@ workflows:
           filters:
             branches:
               ignore: main
-      - deploy:
+      - deploy-job: 
           filters:
             branches:
               only: main
