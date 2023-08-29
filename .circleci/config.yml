@@ -35,7 +35,7 @@ jobs:
             ./cc-test-reporter before-build
             npm run codeCoverage
             ./cc-test-reporter format-coverage -t clover coverage/clover.xml
-            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+            # ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - store_test_results:
           path: test-results
       - store_artifacts:
