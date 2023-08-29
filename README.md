@@ -18,9 +18,9 @@ json-placeholder-replacer replaceableFilename [...variableMaps]
 
 ### Example
 
-````shell
-json-placeholder-replacer ```[replaceable.json](/rep) [variable.map](/map)
-````
+```shell
+json-placeholder-replacer [replaceable.json](/rep) [variable.map](/map)
+```
 
 ### Would result
 
