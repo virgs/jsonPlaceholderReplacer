@@ -18,9 +18,7 @@ json-placeholder-replacer replaceableFilename [...variableMaps]
 
 ### Example
 
-```shell
-json-placeholder-replacer [replaceable.json](/rep) [variable.map](/map)
-```
+$ json-placeholder-replacer [replaceable.json](/rep) [variable.map](/map)
 
 ### Would result
 
@@ -44,8 +42,6 @@ json-placeholder-replacer replaceable.json variable.map
 ```
 
 ## Library usage
-
-As simples as:
 
 ```typescript
 import { JsonPlaceholderReplacer } from "json-placeholder-replacer";
@@ -124,7 +120,9 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-### It keeps original variable types. So, if, in the map, a variable is boolean/string/number/object when it's replaced, it remains as boolean/string/number/object
+### It keeps original variable types
+
+If a variable in the map is boolean/string/number/object, it remains as boolean/string/number/object when it's replaced
 
 ```typescript
 placeHolderReplacer.addVariableMap({
@@ -229,7 +227,7 @@ placeHolderReplacer.addVariableMap({
   key: "value",
 });
 const afterReplace: any = placeHolderReplacer.replace({
-  replaceable: "<<not-found-key=default-value>>", // Note the ':=:'
+  replaceable: "<<not-found-key:=:default-value>>", // Note the ':=:'
 });
 
 // afterReplace = {

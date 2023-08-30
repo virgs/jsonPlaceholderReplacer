@@ -93,5 +93,7 @@ workflows:
           requires:
             - build-job
           filters:
+            tags:
+              only: /.*/ # only on commits that have tags
             branches:
               only: main
