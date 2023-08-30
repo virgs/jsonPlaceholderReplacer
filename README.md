@@ -222,14 +222,14 @@ const afterReplace: any = placeHolderReplacer.replace({
 
 ```typescript
 const placeHolderReplacer = new JsonPlaceholderReplacer({
-  defaultValueSeparator: "=",
+  defaultValueSeparator: ":=:",
 });
 
 placeHolderReplacer.addVariableMap({
   key: "value",
 });
 const afterReplace: any = placeHolderReplacer.replace({
-  replaceable: "<<not-found-key=default-value>>", // Note the '=' character here
+  replaceable: "<<not-found-key=default-value>>", // Note the ':=:'
 });
 
 // afterReplace = {
