@@ -153,7 +153,10 @@ export class JsonPlaceholderReplacer {
     );
     if (defaultValueSeparatorIndex > 0) {
       tag = path.substring(0, defaultValueSeparatorIndex);
-      defaultValue = path.substring(defaultValueSeparatorIndex + 1);
+      defaultValue = path.substring(
+        defaultValueSeparatorIndex +
+          this.configuration.defaultValueSeparator.length,
+      );
     }
     return { tag, defaultValue };
   }

@@ -167,21 +167,6 @@ describe("JsonPlaceholderReplacer", () => {
 
   it("should override default values if key is found", () => {
     const defaultValue = "default-value";
-    const placeHolderReplacer = new JsonPlaceholderReplacer();
-
-    const expected = 100;
-    placeHolderReplacer.addVariableMap({
-      "key-with-default-value": expected,
-    });
-    const afterReplace: any = placeHolderReplacer.replace({
-      replaceable: `{{key-with-default-value:${defaultValue}}}`,
-    });
-
-    expect(afterReplace.replaceable).toBe(expected);
-  });
-
-  it("should override default values if key is found", () => {
-    const defaultValue = "default-value";
     const defaultValueKey = "key-with-default-value";
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 
@@ -199,20 +184,16 @@ describe("JsonPlaceholderReplacer", () => {
   it("should be able to change default value separator", () => {
     const defaultValue = "default-value";
     const defaultValueKey = "key-with-default-value";
-    const separatorCharacter = "=";
+    const separatorCharacter = ":=:";
     const placeHolderReplacer = new JsonPlaceholderReplacer({
       defaultValueSeparator: separatorCharacter,
     });
 
-    const expected = 100;
-    placeHolderReplacer.addVariableMap({
-      [defaultValueKey]: expected,
-    });
     const afterReplace: any = placeHolderReplacer.replace({
       replaceable: `{{${defaultValueKey}${separatorCharacter}${defaultValue}}}`,
     });
 
-    expect(afterReplace.replaceable).toBe(expected);
+    expect(afterReplace.replaceable).toBe(defaultValue);
   });
 
   it("should navigate through variableMap", () => {
