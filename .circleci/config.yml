@@ -93,10 +93,10 @@ workflows:
             branches:
               ignore: main
       - deploy-job:
+          when:
+            equal: [main, << pipeline.git.branch >>]
           requires:
             - build-job
           filters:
             tags:
               only: /.*/ # only on commits that have tags
-            branches:
-              only: main
