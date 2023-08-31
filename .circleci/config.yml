@@ -99,10 +99,10 @@ workflows:
       - build-job:
           filters:
             tags:
-              only: /.*/ # tags are inherited
+              only: /deploy/ # tags are inherited
       - deploy-job:
           requires:
             - build-job
           filters:
             tags:
-              only: /.*/ # only on commits that have tags
+              only: /deploy/ # only on commits that have this tag
