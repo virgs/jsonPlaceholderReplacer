@@ -92,7 +92,7 @@ workflows:
           filters:
             branches:
               ignore: main
-  merge-workflow: # this can be any name you choose
+  merge-workflow:
     when:
       equal: [main, << pipeline.git.branch >>]
     jobs:
