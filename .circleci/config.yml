@@ -80,23 +80,29 @@ jobs:
           command: npm publish
 
 workflows:
-  pipeline-workflow: # this can be any name you choose
+  pr-workflow: # this can be any name you choose
+    when:
+      not:
+        equal: [main, << pipeline.git.branch >>]
     jobs:
-      - build-job:
-          filters:
-            tags:
-              only: /.*/ # tags are inherited
+      - build-job
       - test-job:
           requires:
             - build-job
           filters:
             branches:
               ignore: main
+  merge-workflow:
+    when:
+      equal: [main, << pipeline.git.branch >>]
+    jobs:
+      - build-job:
+          filters:
+            tags:
+              only: /.*/ # tags are inherited
       - deploy-job:
           requires:
             - build-job
           filters:
             tags:
               only: /.*/ # only on commits that have tags
-            branches:
-              only: main
