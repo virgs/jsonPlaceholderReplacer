@@ -94,15 +94,11 @@ workflows:
               ignore: main
   merge-workflow:
     when:
-      equal: [main, << pipeline.git.branch >>]
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - equal: [deploy, << pipeline.git.tag >>] # only on commits that have this tag
     jobs:
-      - build-job:
-          filters:
-            tags:
-              only: /deploy/ # tags are inherited
+      - build-job
       - deploy-job:
           requires:
             - build-job
-          filters:
-            tags:
-              only: /deploy/ # only on commits that have this tag
