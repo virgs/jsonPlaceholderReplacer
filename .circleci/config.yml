@@ -82,7 +82,10 @@ jobs:
 workflows:
   pipeline-workflow: # this can be any name you choose
     jobs:
-      - build-job
+      - build-job:
+          filters:
+            tags:
+              only: /.*/ # tags are inherited
       - test-job:
           requires:
             - build-job
