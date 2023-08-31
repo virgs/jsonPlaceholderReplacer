@@ -96,9 +96,14 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - equal: [deploy, << pipeline.git.tag >>] # only on commits that have this tag
     jobs:
-      - build-job
+      - build-job:
+          filters:
+            tags:
+              only: /v.*/ # tags are inherited
       - deploy-job:
           requires:
             - build-job
+          filters:
+            tags:
+              only: /v.*/ # only on commits that have this tag
