@@ -1,6 +1,6 @@
-import { JsonPlaceholderReplacer } from "./json-placeholder-replacer";
+import { JsonPlaceholderReplacer } from "./library";
 
-describe("JsonPlaceholderReplacer", () => {
+describe("library", () => {
   it("should handle undefined values exception", () => {
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 

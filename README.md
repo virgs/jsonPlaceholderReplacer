@@ -13,12 +13,15 @@ Don't worry, if you don't like these default placeholders you can create your ow
 ## CLI usage
 
 ```shell
-json-placeholder-replacer replaceableFilename [...variableMaps]
+json-placeholder-replacer annotetad-json.json [...variableMaps]
 ```
 
 ### Example
 
-$ json-placeholder-replacer [replaceable.json](/rep) [variable.map](/map)
+$ json-placeholder-replacer [annotated.json](/annotated.json) [variable_map.json](/variable_map.json)
+$ jpr [variable_map.json](/variable_map.json) < [annotated.json](/annotated.json)
+$ cat [annotated.json](/annotated.json) | jpr [variable_map.json](/variable_map.json)
+$ echo '{"curly": "{{key}}", "angle": "<<key>>"}' | jpr variable_maps
 
 ### Would result
 

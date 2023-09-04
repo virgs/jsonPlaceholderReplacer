@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "node_modules/.bin/jest && node dist/index.js rep map",
+    "test": "node_modules/.bin/jest",
     "codeCoverage": "node_modules/.bin/jest --silent --coverage",
     "lint": "node_modules/.bin/tslint --project tsconfig.json --force",
     "build": "tsc --project tsconfig.build.json",
@@ -42,8 +42,12 @@
     "jpr": "dist/index.js"
   },
   "jest": {
+    "rootDir": "src",
     "collectCoverageFrom": [
-      "src/json-placeholder-replacer.ts"
+      "<rootDir>/**.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/index.ts"
     ],
     "coverageThreshold": {
       "global": {
