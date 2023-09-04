@@ -42,12 +42,11 @@
     "jpr": "dist/index.js"
   },
   "jest": {
-    "rootDir": "src",
     "collectCoverageFrom": [
-      "<rootDir>/**.ts"
+      "src/**.ts"
     ],
     "coveragePathIgnorePatterns": [
-      "<rootDir>/index.ts"
+      "src/index.ts"
     ],
     "coverageThreshold": {
       "global": {
