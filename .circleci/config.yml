@@ -107,3 +107,7 @@ workflows:
           filters:
             tags:
               only: /v.*/ # only on commits that have this tag
+
+# to deploy, run:
+# npm version patch
+# git push --atomic origin <tag-name> # push your commits and tags to origin, thus enabling deploy related jobs
