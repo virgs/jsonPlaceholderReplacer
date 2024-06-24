@@ -16,13 +16,20 @@ describe("library", () => {
 
     const expected = 100;
     placeHolderReplacer.addVariableMap({
-      key: expected,
+      key: 100,
+      numstring: "101",
     });
     const afterReplace: any = placeHolderReplacer.replace({
       replaceable: "{{key}}",
+      y: "{{numstring}}",
+      x: "4.0",
+      z: 8,
     });
 
     expect(afterReplace.replaceable).toBe(expected);
+    expect(afterReplace.y).toBe("101");
+    expect(afterReplace.x).toBe("4.0");
+    expect(afterReplace.z).toBe(8);
   });
 
   it("should replace placeholder <<>>", () => {
