@@ -86,13 +86,14 @@ export class JsonPlaceholderReplacer {
       if (typeof attribute === "object") {
         node[key] = this.replaceChildren(attribute);
       } else if (attribute !== undefined) {
-        node[key] = this.replaceValue(attribute.toString());
+        node[key] = this.replaceValue(attribute);
       }
     }
     return node;
   }
 
-  private replaceValue(node: string): string {
+  private replaceValue(node: any): string {
+    const attributeAsString = node.toString();
     const placeHolderIsInsideStringContext =
       !this.delimiterTagsRegex.test(node);
     const output = this.configuration.delimiterTags.reduce(
@@ -106,9 +107,12 @@ export class JsonPlaceholderReplacer {
           this.replacer(placeHolderIsInsideStringContext)(delimiterTag),
         );
       },
-      node,
+      attributeAsString,
     );
     try {
+      if (output === attributeAsString) {
+        return node;
+      }
       return JSON.parse(output);
     } catch (exc) {
       return output;

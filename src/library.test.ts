@@ -11,18 +11,47 @@ describe("library", () => {
     ).not.toThrow();
   });
 
+  it("should keep original values", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    const afterReplace: any = placeHolderReplacer.replace({
+      stringFloat: "4.0",
+      stringInt: "7",
+      stringBoolean: "true",
+      boolTrue: true,
+      boolFalse: false,
+      numberInt: 8,
+      numberFloat: 8.123,
+      nullNull: null,
+      stringNull: "null",
+    });
+
+    expect(afterReplace.stringFloat).toBe("4.0");
+    expect(afterReplace.stringInt).toBe("7");
+    expect(afterReplace.stringBoolean).toBe("true");
+    expect(afterReplace.boolTrue).toBe(true);
+    expect(afterReplace.boolFalse).toBe(false);
+    expect(afterReplace.numberInt).toBe(8);
+    expect(afterReplace.numberFloat).toBe(8.123);
+    expect(afterReplace.nullNull).toBeNull();
+    expect(afterReplace.stringNull).toBe("null");
+  });
+
   it("should replace placeholder {{}}", () => {
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 
     const expected = 100;
     placeHolderReplacer.addVariableMap({
-      key: expected,
+      key: 100,
+      numstring: "101",
     });
     const afterReplace: any = placeHolderReplacer.replace({
       replaceable: "{{key}}",
+      y: "{{numstring}}",
     });
 
     expect(afterReplace.replaceable).toBe(expected);
+    expect(afterReplace.y).toBe("101");
   });
 
   it("should replace placeholder <<>>", () => {
