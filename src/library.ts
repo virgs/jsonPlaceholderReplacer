@@ -11,6 +11,8 @@ const defaultDelimiterTags = [
 
 const defaultSeparator = ":";
 
+const defaultNullishValues = [] as string[];
+
 export interface DelimiterTag {
   begin: string;
   end: string;
@@ -21,6 +23,7 @@ export interface DelimiterTag {
 export interface Configuration {
   delimiterTags: DelimiterTag[];
   defaultValueSeparator: string;
+  nullishValues: (boolean | number | string | null)[];
 }
 
 export class JsonPlaceholderReplacer {
@@ -59,6 +62,14 @@ export class JsonPlaceholderReplacer {
     return this;
   }
 
+  public setVariableMap(
+    ...variablesMap: (Record<string, unknown> | string)[]
+  ): JsonPlaceholderReplacer {
+    this.variablesMap.length = 0;
+    variablesMap.forEach((variableMap) => this.addVariableMap(variableMap));
+    return this;
+  }
+
   public replace(json: object): object {
     return this.replaceChildren(json);
   }
@@ -66,6 +77,7 @@ export class JsonPlaceholderReplacer {
   private initializeOptions(options?: Partial<Configuration>): Configuration {
     let delimiterTags = defaultDelimiterTags;
     let defaultValueSeparator = defaultSeparator;
+    let nullishValues = defaultNullishValues;
     if (options !== undefined) {
       if (
         options.delimiterTags !== undefined &&
@@ -76,8 +88,12 @@ export class JsonPlaceholderReplacer {
       if (options.defaultValueSeparator !== undefined) {
         defaultValueSeparator = options.defaultValueSeparator;
       }
+      if (options.nullishValues?.length) {
+        nullishValues = options.nullishValues.map((v) => JSON.stringify(v));
+      }
     }
-    return { defaultValueSeparator, delimiterTags };
+
+    return { defaultValueSeparator, delimiterTags, nullishValues };
   }
 
   private replaceChildren(node: any): any {
@@ -166,10 +182,15 @@ export class JsonPlaceholderReplacer {
   }
 
   private checkInEveryMap(path: string): string | undefined {
-    let result;
-    this.variablesMap.forEach(
-      (map) => (result = this.navigateThroughMap(map, path)),
-    );
+    const { nullishValues } = this.configuration;
+    let result: string | undefined;
+    this.variablesMap.forEach((map) => {
+      let value = this.navigateThroughMap(map, path);
+      if (value !== undefined && nullishValues.includes(value)) {
+        value = undefined;
+      }
+      result = value || result;
+    });
     return result;
   }
 
