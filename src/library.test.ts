@@ -202,6 +202,21 @@ describe("library", () => {
     ).toStrictEqual({ key1: "{{key1}}", key2: "someKey2", key3: "someKey3" });
   });
 
+  it("should mutate passed objects in place on replacement", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    placeHolderReplacer.addVariableMap({ key: "someKey" });
+
+    const object = { key: "{{key}}", some: true };
+    const array = [false, "{{key}}"];
+
+    const afterReplaceObject = placeHolderReplacer.replace(object);
+    const afterReplaceArray = placeHolderReplacer.replace(array);
+
+    expect(afterReplaceObject).toEqual(object);
+    expect(afterReplaceArray).toEqual(array);
+  });
+
   it("should accept default values with separator", () => {
     const defaultValue = "default-value";
     const placeHolderReplacer = new JsonPlaceholderReplacer();
