@@ -71,7 +71,7 @@ const afterReplace = placeHolderReplacer.replace({
 > An object passed to `.replace()` is mutated in-place:
 >
 > ```ts
-> const beforeReplace = { some: "object" };
+> const beforeReplace = { some: "{{placeholder}}" };
 > const afterReplace = placeHolderReplacer.replace(beforeReplace);
 > // beforeReplace === afterReplace
 > ```
