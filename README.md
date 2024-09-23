@@ -67,6 +67,15 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
+> [!NOTE]
+> An object passed to `.replace()` is mutated in-place:
+>
+> ```ts
+> const beforeReplace = { some: "object" };
+> const afterReplace = placeHolderReplacer.replace(beforeReplace);
+> // beforeReplace === afterReplace
+> ```
+
 ### You can replace the default placeholders with some as cool as you want
 
 ```typescript
