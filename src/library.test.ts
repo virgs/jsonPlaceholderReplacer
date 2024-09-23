@@ -202,6 +202,23 @@ describe("library", () => {
     ).toStrictEqual({ key1: "{{key1}}", key2: "someKey2", key3: "someKey3" });
   });
 
+  it("should work with local variableMap", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    placeHolderReplacer.addVariableMap({ key1: "someKey1" });
+
+    expect(
+      placeHolderReplacer.replaceWith({ key1: "{{key1}}", key2: "{{key2}}" }),
+    ).toStrictEqual({ key1: "{{key1}}", key2: "{{key2}}" });
+
+    expect(
+      placeHolderReplacer.replaceWith(
+        { key1: "{{key1}}", key2: "{{key2}}" },
+        { key2: "someKey2" },
+      ),
+    ).toStrictEqual({ key1: "{{key1}}", key2: "someKey2" });
+  });
+
   it("should mutate passed objects in place on replacement", () => {
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 
