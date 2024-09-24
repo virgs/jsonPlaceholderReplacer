@@ -165,24 +165,76 @@ describe("library", () => {
     expect(afterReplace.replaceable).toBe(expected);
   });
 
-  it("last added map should have higher priority", () => {
+  it("last added map should have higher priority, but preserve value from previous map", () => {
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 
-    const expected = 100;
     placeHolderReplacer.addVariableMap({
       key: "useless",
+      key2: "handy",
     });
     placeHolderReplacer.addVariableMap({
-      key: expected,
+      key: 100,
     });
     const afterReplace: any = placeHolderReplacer.replace({
       replaceable: "{{key}}",
+      replaceable2: "{{key2}}",
     });
 
-    expect(afterReplace.replaceable).toBe(expected);
+    expect(afterReplace.replaceable).toBe(100);
+    expect(afterReplace.replaceable2).toBe("handy");
   });
 
-  it("should acceptd default values with separator", () => {
+  it("should overwrite variableMap", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    placeHolderReplacer.addVariableMap({ key1: "someKey1" });
+    placeHolderReplacer.setVariableMap(
+      { key3: { deep: "someKey3" } },
+      { key2: "someKey2" },
+    );
+
+    expect(
+      placeHolderReplacer.replace({
+        key1: "{{key1}}",
+        key2: "{{key2}}",
+        key3: "{{key3.deep}}",
+      }),
+    ).toStrictEqual({ key1: "{{key1}}", key2: "someKey2", key3: "someKey3" });
+  });
+
+  it("should work with local variableMap", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    placeHolderReplacer.addVariableMap({ key1: "someKey1" });
+
+    expect(
+      placeHolderReplacer.replaceWith({ key1: "{{key1}}", key2: "{{key2}}" }),
+    ).toStrictEqual({ key1: "{{key1}}", key2: "{{key2}}" });
+
+    expect(
+      placeHolderReplacer.replaceWith(
+        { key1: "{{key1}}", key2: "{{key2}}" },
+        { key2: "someKey2" },
+      ),
+    ).toStrictEqual({ key1: "{{key1}}", key2: "someKey2" });
+  });
+
+  it("should mutate passed objects in place on replacement", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    placeHolderReplacer.addVariableMap({ key: "someKey" });
+
+    const object = { key: "{{key}}", some: true };
+    const array = [false, "{{key}}"];
+
+    const afterReplaceObject = placeHolderReplacer.replace(object);
+    const afterReplaceArray = placeHolderReplacer.replace(array);
+
+    expect(afterReplaceObject).toEqual(object);
+    expect(afterReplaceArray).toEqual(array);
+  });
+
+  it("should accept default values with separator", () => {
     const defaultValue = "default-value";
     const placeHolderReplacer = new JsonPlaceholderReplacer();
 
@@ -208,6 +260,54 @@ describe("library", () => {
     });
 
     expect(afterReplace.replaceable).toBe(expected);
+  });
+
+  it("should be able to set values which should be treated as nullish to replace with default value", () => {
+    const defaultValue = "default";
+    const variables = {
+      null: null,
+      empty: "",
+      false: false,
+      number: 0,
+    };
+
+    const placeHolderReplacer = new JsonPlaceholderReplacer({
+      nullishValues: [null, "", false, 0],
+    });
+
+    placeHolderReplacer.addVariableMap(variables);
+
+    expect(
+      placeHolderReplacer.replace({
+        undefined: `{{undefined:${defaultValue}}}`,
+        null: `{{null:${defaultValue}}}`,
+        empty: `{{empty:${defaultValue}}}`,
+        false: `{{false:${defaultValue}}}`,
+        number: `{{number:${defaultValue}}}`,
+      }),
+    ).toStrictEqual({
+      undefined: defaultValue,
+      empty: defaultValue,
+      false: defaultValue,
+      null: defaultValue,
+      number: defaultValue,
+    });
+
+    expect(
+      placeHolderReplacer.replace({
+        undefined: `{{undefined}}`,
+        null: `{{null}}`,
+        empty: `{{empty}}`,
+        false: `{{false}}`,
+        number: `{{number}}`,
+      }),
+    ).toStrictEqual({
+      undefined: `{{undefined}}`,
+      null: `{{null}}`,
+      empty: `{{empty}}`,
+      false: `{{false}}`,
+      number: `{{number}}`,
+    });
   });
 
   it("should be able to change default value separator", () => {

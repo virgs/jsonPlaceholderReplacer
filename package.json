@@ -2,8 +2,8 @@
   "name": "json-placeholder-replacer",
   "version": "2.0.5",
   "description": "Javascript/Typescript library/cli to replace placeholders in an javascript object",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/library.js",
+  "types": "dist/library.d.ts",
   "scripts": {
     "test": "node_modules/.bin/jest",
     "codeCoverage": "node_modules/.bin/jest --silent --coverage",

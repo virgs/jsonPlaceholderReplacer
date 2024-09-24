@@ -67,6 +67,15 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
+> [!NOTE]
+> An object passed to `.replace()` is mutated in-place:
+>
+> ```ts
+> const beforeReplace = { some: "{{placeholder}}" };
+> const afterReplace = placeHolderReplacer.replace(beforeReplace);
+> // beforeReplace === afterReplace
+> ```
+
 ### You can replace the default placeholders with some as cool as you want
 
 ```typescript
@@ -105,21 +114,69 @@ const afterReplace = placeHolderReplacer.replace({
 // }
 ```
 
-### And the last added maps have higher priority, so
+### And the last added maps have higher priority (but non-nullish values will be preserved from previous map)
 
 ```typescript
 placeHolderReplacer.addVariableMap({
   id: "lowerPriority",
+  name: "Name",
 });
 placeHolderReplacer.addVariableMap({
   id: "higherPriority",
+  name: undefined,
 });
 const afterReplace = placeHolderReplacer.replace({
-  replaceable: "{{id}}",
+  id: "{{id}}",
+  name: "{{name}}",
 });
 
 // afterReplace = {
-//    replaceable: "higherPriority"
+//    id: "higherPriority"
+//    name: "Name"
+// }
+```
+
+### It's possible to override global values map with `.setVariableMap()`
+
+```typescript
+placeHolderReplacer.addVariableMap({
+  id: "Id",
+  name: "Name",
+});
+placeHolderReplacer.setVariableMap({
+  // <- note setVariableMap() here
+  id: "New Id",
+  name: undefined,
+});
+const afterReplace = placeHolderReplacer.replace({
+  id: "{{id}}",
+  name: "{{name}}",
+});
+
+// afterReplace = {
+//    id: "New Id"
+//    name: "{{name}}"
+// }
+```
+
+### It's possible to override global maps with local by `.replaceWith()`
+
+```typescript
+placeHolderReplacer.addVariableMap({
+  id: "Id",
+  name: "Name",
+});
+const afterReplace = placeHolderReplacer.replaceWith(
+  {
+    id: "{{id}}",
+    name: "{{name}}",
+  },
+  { name: "New Name" },
+);
+
+// afterReplace = {
+//    id: "{{id}}"
+//    name: "New Name"
 // }
 ```
 
@@ -171,19 +228,17 @@ const afterReplace = placeHolderReplacer.replace({
 
 ```typescript
 placeHolderReplacer.addVariableMap({
-    key: 987,
-    objectReplaceable: {
-      inner: "inner"
-    }
+  key: 987,
+  objectReplaceable: {
+    inner: "inner",
+  },
 });
 const afterReplace = placeHolderReplacer.replace({
-    array: ["string", "{{objectReplaceable}}", {{key}}]
-})
+  array: ["string", "{{objectReplaceable}}", "{{key}}"],
+});
 
 // afterReplace = {
-//    array: ["string", {
-//                        inner: "inner"
-//                      }, 987]
+//    array: ["string", { inner: "inner" }, 987]
 // }
 ```
 
