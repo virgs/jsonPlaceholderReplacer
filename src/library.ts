@@ -1,4 +1,4 @@
-const defaultDelimiterTags = [
+const defaultDelimiterTags: DelimiterTagFixture[] = [
   {
     begin: "{{",
     end: "}}",
@@ -13,15 +13,26 @@ const defaultSeparator = ":";
 
 const defaultNullishValues = [] as string[];
 
-export interface DelimiterTag {
+export interface DelimiterTagFixture {
   begin: string;
   end: string;
-  escapedBeginning?: string;
-  escapedEnding?: string;
 }
 
+export interface Placeholder {
+  begin: string;
+  end: string;
+  escapedBeginning: string;
+  escapedEnding: string;
+  regex: RegExp;
+}
+
+export interface BuildOptions {
+  delimiterTags: DelimiterTagFixture[];
+  defaultValueSeparator: string;
+  nullishValues: (boolean | number | string | null)[];
+}
 export interface Configuration {
-  delimiterTags: DelimiterTag[];
+  placeholders: Placeholder[];
   defaultValueSeparator: string;
   nullishValues: (boolean | number | string | null)[];
 }
@@ -32,19 +43,11 @@ export class JsonPlaceholderReplacer {
   private readonly variablesMap: VariableMap[] = [];
   private readonly configuration: Configuration;
   private readonly delimiterTagsRegex: RegExp;
-  private readonly escapeRegExp = (text: string): string =>
-    text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 
-  public constructor(options?: Partial<Configuration>) {
-    this.configuration = this.initializeOptions(options);
-    this.configuration.delimiterTags = this.configuration.delimiterTags.map(
-      (tag) => ({
-        ...tag,
-        escapedBeginning: this.escapeRegExp(tag.begin),
-        escapedEnding: this.escapeRegExp(tag.end),
-      }),
-    );
-    const delimiterTagsRegexes = this.configuration.delimiterTags
+  public constructor(options?: Partial<BuildOptions>) {
+    this.configuration = this.initializeConfigurations(options);
+
+    const delimiterTagsRegexes = this.configuration.placeholders
       .map(
         (delimiterTag) =>
           `^${delimiterTag.begin}[^${delimiterTag.end}]+${delimiterTag.end}$`,
@@ -57,9 +60,9 @@ export class JsonPlaceholderReplacer {
     variableMap: VariableMap | string,
   ): JsonPlaceholderReplacer {
     if (typeof variableMap === "string") {
-      this.variablesMap.push(JSON.parse(variableMap));
+      this.variablesMap.unshift(JSON.parse(variableMap));
     } else {
-      this.variablesMap.push(variableMap);
+      this.variablesMap.unshift(variableMap);
     }
     return this;
   }
@@ -77,29 +80,45 @@ export class JsonPlaceholderReplacer {
   }
 
   public replaceWith(json: object, ...variablesMap: VariableMap[]): object {
-    return this.replaceChildren(json, variablesMap, new WeakSet());
+    return this.replaceChildren(json, variablesMap.reverse(), new WeakSet());
   }
 
-  private initializeOptions(options?: Partial<Configuration>): Configuration {
-    let delimiterTags = defaultDelimiterTags;
+  private initializeConfigurations(
+    options?: Partial<BuildOptions>,
+  ): Configuration {
+    const tags = options?.delimiterTags || defaultDelimiterTags;
+
+    const escapeRegExp = (text: string): string =>
+      text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    const delimiterTags: Placeholder[] = tags.map((tag) => {
+      const escapedBeginning = escapeRegExp(tag.begin);
+      const escapedEnding = escapeRegExp(tag.end);
+      return {
+        begin: tag.begin,
+        end: tag.end,
+        escapedBeginning,
+        escapedEnding,
+        regex: new RegExp(
+          `(${escapedBeginning}[^${escapedEnding}]+${escapedEnding})`,
+          "g",
+        ),
+      };
+    });
+
     let defaultValueSeparator = defaultSeparator;
+    if (options?.defaultValueSeparator !== undefined) {
+      defaultValueSeparator = options.defaultValueSeparator;
+    }
     let nullishValues = defaultNullishValues;
-    if (options !== undefined) {
-      if (
-        options.delimiterTags !== undefined &&
-        options.delimiterTags.length > 0
-      ) {
-        delimiterTags = options.delimiterTags;
-      }
-      if (options.defaultValueSeparator !== undefined) {
-        defaultValueSeparator = options.defaultValueSeparator;
-      }
-      if (options.nullishValues?.length) {
-        nullishValues = options.nullishValues.map((v) => JSON.stringify(v));
-      }
+    if (options?.nullishValues?.length) {
+      nullishValues = options.nullishValues.map((v) => JSON.stringify(v));
     }
 
-    return { defaultValueSeparator, delimiterTags, nullishValues };
+    return {
+      defaultValueSeparator,
+      placeholders: delimiterTags,
+      nullishValues,
+    };
   }
 
   private replaceChildren(
@@ -134,14 +153,10 @@ export class JsonPlaceholderReplacer {
     const attributeAsString = node.toString();
     const placeHolderIsInsideStringContext =
       !this.delimiterTagsRegex.test(node);
-    const output = this.configuration.delimiterTags.reduce(
+    const output = this.configuration.placeholders.reduce(
       (acc, delimiterTag) => {
-        const regex = new RegExp(
-          `(${delimiterTag.escapedBeginning}[^${delimiterTag.escapedEnding}]+${delimiterTag.escapedEnding})`,
-          "g",
-        );
         return acc.replace(
-          regex,
+          delimiterTag.regex,
           this.replacer(
             placeHolderIsInsideStringContext,
             variablesMap,
@@ -164,7 +179,7 @@ export class JsonPlaceholderReplacer {
     placeHolderIsInsideStringContext: boolean,
     variablesMap: VariableMap[],
   ) {
-    return (delimiterTag: DelimiterTag) =>
+    return (delimiterTag: Placeholder) =>
       (placeHolder: string): string => {
         const { tag, defaultValue } = this.parseTag(placeHolder, delimiterTag);
 
@@ -188,7 +203,7 @@ export class JsonPlaceholderReplacer {
 
   private parseTag(
     placeHolder: string,
-    delimiterTag: DelimiterTag,
+    delimiterTag: Placeholder,
   ): { tag: string; defaultValue: string | undefined } {
     const path: string = placeHolder.substring(
       delimiterTag.begin.length,
@@ -209,20 +224,16 @@ export class JsonPlaceholderReplacer {
     return { tag, defaultValue };
   }
 
-  private checkInEveryMap(
-    path: string,
-    variablesMap: VariableMap[],
-  ): string | undefined {
+  private checkInEveryMap(path: string, variablesMap: VariableMap[]): any {
     const { nullishValues } = this.configuration;
-    let result: string | undefined;
-    variablesMap.forEach((map) => {
+    for (const map of variablesMap) {
       let value = this.navigateThroughMap(map, path);
-      if (value !== undefined && nullishValues.includes(value)) {
-        value = undefined;
+      // Compare using loose equality to handle nullish values correctly
+      if (value !== undefined && !nullishValues.includes(value)) {
+        return value;
       }
-      result = value || result;
-    });
-    return result;
+    }
+    return undefined;
   }
 
   private navigateThroughMap(map: any, path: string): string | undefined {
