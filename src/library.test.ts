@@ -1,4 +1,5 @@
 import { JsonPlaceholderReplacer } from "./library";
+import lodash from "lodash";
 
 describe("library", () => {
   it("should handle undefined values exception", () => {
@@ -680,5 +681,30 @@ describe("library", () => {
 
     expect(afterReplace.multiLine).toBe(multiLine);
     expect(afterReplace.backSlash).toBe(backSlash);
+  });
+
+  it("should handle cyclic json", () => {
+    const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+    const cyclicObject: any = {
+      key: "{{key1}}",
+      deep: {
+        nested: "{{key2}}",
+      },
+    };
+    cyclicObject.deep.circular = cyclicObject;
+    placeHolderReplacer.addVariableMap({ key1: "value1", key2: "value2" });
+
+    const afterReplace: any = placeHolderReplacer.replace(cyclicObject);
+
+    expect(afterReplace.key).toBe("value1");
+    expect(afterReplace.deep.nested).toBe("value2");
+    // Check that the circular reference is preserved
+    expect(afterReplace.deep.circular).toBe(afterReplace);
+    expect(afterReplace.deep.circular.key).toBe("value1");
+    expect(afterReplace.deep.circular.deep.nested).toBe("value2");
+    expect(afterReplace.deep.circular.deep.circular).toBe(
+      afterReplace.deep.circular,
+    );
   });
 });

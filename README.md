@@ -292,3 +292,34 @@ const afterReplace: any = placeHolderReplacer.replace({
 //    replaceable: "default-value"
 // }
 ```
+
+### Lastly, cyclic objects are also accepted
+
+```typescript
+const placeHolderReplacer = new JsonPlaceholderReplacer();
+
+const cyclicObject: any = {
+  key: "{{key1}}",
+  deep: {
+    nested: "{{key2}}",
+  },
+};
+cyclicObject.deep.circular = cyclicObject;
+placeHolderReplacer.addVariableMap({ key1: "value1", key2: "value2" });
+
+const afterReplace: any = placeHolderReplacer.replace(cyclicObject);
+
+// afterReplace = {
+//    key: "value1",
+//    deep: {
+//      nested: "value2",
+//      circular: {
+//        key: "value1",
+//        deep: {
+//          nested: "value2",
+//          circular: [CYCLE...]
+//        }
+//      }
+//    }
+// }
+```

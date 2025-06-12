@@ -32,16 +32,16 @@ export class JsonPlaceholderReplacer {
   private readonly variablesMap: VariableMap[] = [];
   private readonly configuration: Configuration;
   private readonly delimiterTagsRegex: RegExp;
+  private readonly escapeRegExp = (text: string): string =>
+    text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 
   public constructor(options?: Partial<Configuration>) {
     this.configuration = this.initializeOptions(options);
-    const escapeRegExp = (text: string): string =>
-      text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     this.configuration.delimiterTags = this.configuration.delimiterTags.map(
       (tag) => ({
         ...tag,
-        escapedBeginning: escapeRegExp(tag.begin),
-        escapedEnding: escapeRegExp(tag.end),
+        escapedBeginning: this.escapeRegExp(tag.begin),
+        escapedEnding: this.escapeRegExp(tag.end),
       }),
     );
     const delimiterTagsRegexes = this.configuration.delimiterTags
@@ -73,11 +73,11 @@ export class JsonPlaceholderReplacer {
   }
 
   public replace(json: object): object {
-    return this.replaceChildren(json, this.variablesMap);
+    return this.replaceChildren(json, this.variablesMap, new WeakSet());
   }
 
   public replaceWith(json: object, ...variablesMap: VariableMap[]): object {
-    return this.replaceChildren(json, variablesMap);
+    return this.replaceChildren(json, variablesMap, new WeakSet());
   }
 
   private initializeOptions(options?: Partial<Configuration>): Configuration {
@@ -102,14 +102,30 @@ export class JsonPlaceholderReplacer {
     return { defaultValueSeparator, delimiterTags, nullishValues };
   }
 
-  private replaceChildren(node: any, variablesMap: VariableMap[]): any {
-    for (const key in node) {
-      const attribute = node[key];
-      if (typeof attribute === "object") {
-        node[key] = this.replaceChildren(attribute, variablesMap);
-      } else if (attribute !== undefined) {
-        node[key] = this.replaceValue(attribute, variablesMap);
+  private replaceChildren(
+    node: any,
+    variablesMap: VariableMap[],
+    visited: WeakSet<object>,
+  ): any {
+    if (typeof node === "object" && node !== null) {
+      if (visited.has(node)) {
+        return node;
       }
+      visited.add(node);
+
+      for (const key in node) {
+        const attribute = node[key];
+        if (typeof attribute === "object" && attribute !== null) {
+          node[key] = this.replaceChildren(attribute, variablesMap, visited);
+        } else if (attribute === null) {
+          node[key] = null;
+        } else if (attribute !== undefined) {
+          node[key] = this.replaceValue(attribute, variablesMap);
+        }
+      }
+      return node;
+    } else if (node !== undefined) {
+      return this.replaceValue(node, variablesMap);
     }
     return node;
   }
