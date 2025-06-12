@@ -153,14 +153,18 @@ export class JsonPlaceholderReplacer {
     const attributeAsString = node.toString();
     const placeHolderIsInsideStringContext =
       !this.delimiterTagsRegex.test(node);
+
+    // Create the replacer function once per call
+    const replacerFn = this.replacer(
+      placeHolderIsInsideStringContext,
+      variablesMap,
+    );
+
     const output = this.configuration.placeholders.reduce(
       (acc, delimiterTag) => {
         return acc.replace(
           delimiterTag.regex,
-          this.replacer(
-            placeHolderIsInsideStringContext,
-            variablesMap,
-          )(delimiterTag),
+          replacerFn(delimiterTag), // Use the same replacerFn
         );
       },
       attributeAsString,
