@@ -44,6 +44,9 @@ export class JsonPlaceholderReplacer {
   private readonly configuration: Configuration;
   private readonly delimiterTagsRegex: RegExp;
 
+  private readonly escapeRegExp = (text: string): string =>
+    text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+
   public constructor(options?: Partial<BuildOptions>) {
     this.configuration = this.initializeConfigurations(options);
 
@@ -88,11 +91,9 @@ export class JsonPlaceholderReplacer {
   ): Configuration {
     const tags = options?.delimiterTags || defaultDelimiterTags;
 
-    const escapeRegExp = (text: string): string =>
-      text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     const delimiterTags: Placeholder[] = tags.map((tag) => {
-      const escapedBeginning = escapeRegExp(tag.begin);
-      const escapedEnding = escapeRegExp(tag.end);
+      const escapedBeginning = this.escapeRegExp(tag.begin);
+      const escapedEnding = this.escapeRegExp(tag.end);
       return {
         begin: tag.begin,
         end: tag.end,
