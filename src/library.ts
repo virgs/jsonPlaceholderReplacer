@@ -11,7 +11,7 @@ const defaultDelimiterTags: DelimiterTagFixture[] = [
 
 const defaultSeparator = ":";
 
-const defaultNullishValues = [] as string[];
+const defaultNullishValues: NullishValue[] = [];
 
 export interface DelimiterTagFixture {
   begin: string;
@@ -31,10 +31,12 @@ export interface BuildOptions {
   defaultValueSeparator: string;
   nullishValues: (boolean | number | string | null)[];
 }
+type NullishValue = boolean | number | string | null;
+
 export interface Configuration {
   placeholders: Placeholder[];
   defaultValueSeparator: string;
-  nullishValues: (boolean | number | string | null)[];
+  nullishValues: NullishValue[];
 }
 
 type VariableMap = Record<string, unknown>;
@@ -43,17 +45,22 @@ export class JsonPlaceholderReplacer {
   private readonly variablesMap: VariableMap[] = [];
   private readonly configuration: Configuration;
   private readonly delimiterTagsRegex: RegExp;
+  private readonly serializedNullishValues: Set<string>;
+  private readonly stringifyCache = new WeakMap<object, string>();
 
   private readonly escapeRegExp = (text: string): string =>
     text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 
   public constructor(options?: Partial<BuildOptions>) {
     this.configuration = this.initializeConfigurations(options);
+    this.serializedNullishValues = new Set(
+      this.configuration.nullishValues.map((v) => JSON.stringify(v)),
+    );
 
     const delimiterTagsRegexes = this.configuration.placeholders
       .map(
         (delimiterTag) =>
-          `^${delimiterTag.begin}[^${delimiterTag.end}]+${delimiterTag.end}$`,
+          `^${delimiterTag.escapedBeginning}[^${delimiterTag.escapedEnding}]+${delimiterTag.escapedEnding}$`,
       )
       .join("|");
     this.delimiterTagsRegex = new RegExp(delimiterTagsRegexes);
@@ -63,7 +70,13 @@ export class JsonPlaceholderReplacer {
     variableMap: VariableMap | string,
   ): JsonPlaceholderReplacer {
     if (typeof variableMap === "string") {
-      this.variablesMap.unshift(JSON.parse(variableMap));
+      try {
+        this.variablesMap.unshift(JSON.parse(variableMap));
+      } catch (error) {
+        throw new Error(
+          `Invalid JSON string provided to addVariableMap: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
     } else {
       this.variablesMap.unshift(variableMap);
     }
@@ -110,9 +123,9 @@ export class JsonPlaceholderReplacer {
     if (options?.defaultValueSeparator !== undefined) {
       defaultValueSeparator = options.defaultValueSeparator;
     }
-    let nullishValues = defaultNullishValues;
+    let nullishValues: NullishValue[] = defaultNullishValues;
     if (options?.nullishValues?.length) {
-      nullishValues = options.nullishValues.map((v) => JSON.stringify(v));
+      nullishValues = options.nullishValues;
     }
 
     return {
@@ -150,7 +163,7 @@ export class JsonPlaceholderReplacer {
     return node;
   }
 
-  private replaceValue(node: any, variablesMap: VariableMap[]): string {
+  private replaceValue(node: any, variablesMap: VariableMap[]): any {
     const attributeAsString = node.toString();
     const placeHolderIsInsideStringContext =
       !this.delimiterTagsRegex.test(node);
@@ -170,14 +183,22 @@ export class JsonPlaceholderReplacer {
       },
       attributeAsString,
     );
-    try {
-      if (output === attributeAsString) {
-        return node;
-      }
-      return JSON.parse(output);
-    } catch (exc) {
-      return output;
+
+    if (output === attributeAsString) {
+      return node;
     }
+
+    // Only try JSON.parse if the output looks like JSON and is not inside string context
+    if (!placeHolderIsInsideStringContext) {
+      try {
+        return JSON.parse(output);
+      } catch (exc) {
+        // If JSON parsing fails, return the output as-is
+        return output;
+      }
+    }
+
+    return output;
   }
 
   private replacer(
@@ -196,14 +217,26 @@ export class JsonPlaceholderReplacer {
           return placeHolder;
         }
         if (!placeHolderIsInsideStringContext) {
-          return mapCheckResult;
+          // For non-string context, we'll return JSON.stringify and let replaceValue handle the parsing
+          return this.safeStringify(mapCheckResult);
         }
-        const parsed: any = JSON.parse(mapCheckResult);
-        if (typeof parsed === "object") {
-          return JSON.stringify(parsed);
+        if (typeof mapCheckResult === "object" && mapCheckResult !== null) {
+          return this.safeStringify(mapCheckResult);
         }
-        return parsed;
+        return String(mapCheckResult);
       };
+  }
+
+  private safeStringify(value: any): string {
+    if (typeof value === "object" && value !== null) {
+      if (this.stringifyCache.has(value)) {
+        return this.stringifyCache.get(value)!;
+      }
+      const stringified = JSON.stringify(value);
+      this.stringifyCache.set(value, stringified);
+      return stringified;
+    }
+    return JSON.stringify(value);
   }
 
   private parseTag(
@@ -230,24 +263,30 @@ export class JsonPlaceholderReplacer {
   }
 
   private checkInEveryMap(path: string, variablesMap: VariableMap[]): any {
-    const { nullishValues } = this.configuration;
     for (const map of variablesMap) {
       let value = this.navigateThroughMap(map, path);
-      // Compare using loose equality to handle nullish values correctly
-      if (value !== undefined && !nullishValues.includes(value)) {
+      if (value !== undefined && !this.isNullishValue(value)) {
         return value;
       }
     }
     return undefined;
   }
 
-  private navigateThroughMap(map: any, path: string): string | undefined {
+  private isNullishValue(value: any): boolean {
+    if (this.serializedNullishValues.size === 0) {
+      return false;
+    }
+    const stringified = this.safeStringify(value);
+    return this.serializedNullishValues.has(stringified);
+  }
+
+  private navigateThroughMap(map: any, path: string): any {
     if (map === undefined) {
       return;
     }
     const shortCircuit = map[path];
     if (shortCircuit !== undefined) {
-      return JSON.stringify(shortCircuit);
+      return shortCircuit;
     }
     const keys = path.split(".");
     const key: string = keys[0];
