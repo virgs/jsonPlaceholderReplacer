@@ -67,6 +67,26 @@ jobs:
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
 
-# to deploy, run:
-# npm version patch
-# git push --atomic origin <tag-name> # push your commits and tags to origin, thus enabling deploy related jobs
+workflows:
+  pr-workflow: # this can be any name you choose
+    when:
+      not:
+        equal: [main, << pipeline.git.branch >>]
+    jobs:
+      - build-job
+      - test-job:
+          requires:
+            - build-job
+          filters:
+            branches:
+              ignore: main
+  merge-workflow:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+    jobs:
+      - build-job:
+          filters:
+            tags:
+              only: /v.*/ # tags are inherited
+
