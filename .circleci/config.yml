@@ -66,47 +66,6 @@ jobs:
             ./cc-test-reporter format-coverage -t clover coverage/clover.xml --output coverage/codeclimate.json
             cp coverage/clover.xml .     
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-  deploy-job: # this can be any name you choose
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run:
-          name: Authenticate with registry
-          command: npm set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-      - run:
-          name: Publish package
-          # make sure you run `npm vestion major|minor|patch` locally before this step
-          command: npm publish
-
-workflows:
-  pr-workflow: # this can be any name you choose
-    when:
-      not:
-        equal: [main, << pipeline.git.branch >>]
-    jobs:
-      - build-job
-      - test-job:
-          requires:
-            - build-job
-          filters:
-            branches:
-              ignore: main
-  merge-workflow:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-    jobs:
-      - build-job:
-          filters:
-            tags:
-              only: /v.*/ # tags are inherited
-      - deploy-job:
-          requires:
-            - build-job
-          filters:
-            tags:
-              only: /v.*/ # only on commits that have this tag
 
 # to deploy, run:
 # npm version patch
