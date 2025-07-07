@@ -71,11 +71,11 @@
     "clearMocks": true
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.17",
     "@types/node": "^24.0.1",
     "husky": "^9.0.10",
-    "jest": "^29.7.0",
+    "jest": "^30.0.4",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",
     "ts-jest": "^29.2.5",
