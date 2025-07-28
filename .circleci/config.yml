@@ -7,11 +7,14 @@ version: 2.1
 # Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
 # See: https://circleci.com/docs/orb-intro/
 orbs:
-  node: circleci/node@5.0.2
+  node: circleci/node@6.1.0
 
 defaults: &defaults
   working_directory: ~/project
   executor: node/default # use the default executor defined within the orb
+  environment:
+    JEST_CACHE_DISABLE: "true"
+    NODE_OPTIONS: "--max-old-space-size=4096"
 
 jobs:
   build-job: # this can be any name you choose
@@ -46,6 +49,13 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
+      - run:
+          name: Clean Jest cache directories
+          command: |
+            rm -rf /tmp/jest_rt || true
+            rm -rf /tmp/jest_* || true
+            rm -rf ~/.cache/jest || true
+            rm -rf node_modules/.cache || true
       - run:
           name: Setup code climate test-reporter
           command: |
