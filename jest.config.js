@@ -2,8 +2,11 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
 
-  // Disable caching to prevent the write-file-atomic issue
+  // Completely disable ALL caching mechanisms to prevent the write-file-atomic issue
   cache: false,
+
+  // Disable watchman to prevent file system caching issues
+  watchman: false,
 
   // Coverage configuration
   collectCoverageFrom: ["src/**.ts"],
@@ -34,10 +37,16 @@ module.exports = {
 
   // Clean state between tests
   clearMocks: true,
+  resetMocks: false,
+  restoreMocks: false,
 
   // Prevent hanging processes
   forceExit: true,
+  detectOpenHandles: true,
 
   // Single worker to avoid concurrency issues in CI
   maxWorkers: 1,
+
+  // Prevent module caching
+  resetModules: true,
 };
