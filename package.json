@@ -5,9 +5,9 @@
   "main": "dist/library.js",
   "types": "dist/library.d.ts",
   "scripts": {
-    "test": "./test-runner.sh",
-    "test:performance": "./test-runner.sh src/performance.test.ts",
-    "codeCoverage": "./test-runner.sh --coverage",
+    "test": "NODE_OPTIONS=\"--max-old-space-size=4096\" jest --no-cache --runInBand --forceExit",
+    "test:performance": "NODE_OPTIONS=\"--max-old-space-size=4096\" jest src/performance.test.ts --no-cache --runInBand --forceExit",
+    "codeCoverage": "NODE_OPTIONS=\"--max-old-space-size=4096\" jest --silent --coverage --no-cache --runInBand --forceExit",
     "lint": "npx prettier . --write",
     "build": "tsc --project tsconfig.build.json",
     "all": "npm run lint && npm run build && npm run codeCoverage && npm run test && npm run test:performance",
