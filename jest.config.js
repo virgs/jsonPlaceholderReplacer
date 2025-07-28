@@ -11,6 +11,8 @@ module.exports = {
   // Coverage configuration
   collectCoverageFrom: ["src/**.ts"],
   coveragePathIgnorePatterns: ["src/index.ts"],
+  coverageReporters: ["text", "lcov", "clover", "json"],
+  coverageDirectory: "coverage",
   coverageThreshold: {
     global: {
       statements: 90,
