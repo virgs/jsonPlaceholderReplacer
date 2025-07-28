@@ -66,10 +66,7 @@ jobs:
           command: npm run lint
           name: Lint app
       - run:
-          command: npm run test
           name: Run tests
-      - run:
-          name: Code Climate Test Coverage
           command: |
             ./cc-test-reporter before-build
             npm run codeCoverage
